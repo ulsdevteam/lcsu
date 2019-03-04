@@ -31,7 +31,7 @@ class SearchesController  extends AppController
 {
     public function index() {
         $keyword = $this->request->getData('keyword');
-        if(!isset($keyword)) $keyword = $this->request->getQuery('keyword');
+        if (!isset($keyword)) $keyword = $this->request->getQuery('keyword');
         if (is_numeric($keyword)) {
             $results = TableRegistry::get('Books')->find()
                 ->where(function ($exp, $q) use ($keyword) {
@@ -43,7 +43,7 @@ class SearchesController  extends AppController
                     return $exp->like('tray_barcode', '%'.$keyword.'%');
                 });
         }
-        
+
         $results = $this->paginate($results);
         $this->set(compact('results', 'keyword'));
     }

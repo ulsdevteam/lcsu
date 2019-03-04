@@ -73,7 +73,7 @@ class FileLoaderCommand extends Command
             $traysizes[$row->tray_category.$row->shelf_height] = $row->traysize_id;
         }
 
-        $file = fopen("sample_shelves.csv","r");
+        $file = fopen($input, "r");
         $count = 0;
         while(! feof($file)) {
             $row = fgetcsv($file);
