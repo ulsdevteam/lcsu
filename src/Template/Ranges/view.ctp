@@ -5,7 +5,10 @@
  */
 ?>
 <div class="ranges view content">
-    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $range->range_id], ['class'=>'func-btn']) ?>
+    <?php 
+    $perm = $cur_user['permission_id'];
+    if ($perm == 1)echo $this->Html->link(__('Edit'), ['action' => 'edit', $range->range_id], ['class'=>'func-btn']) 
+    ?>
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('Range Title') ?></th>
@@ -15,13 +18,17 @@
 
     <div class="child-table">
         <h5 class="page-title">Located modules</h5>
-        <?=$this->Html->link( __('Add Module'),
+        <?php 
+        if ($perm == 1) {
+            echo $this->Html->link( __('Add Module'),
                             array('controller'=>'modules', 'action' => 'add', 'range_id' => $range->range_id),
                             array(
                                 'bootstrap-type' => 'primary',
                                 'class' => 'func-btn'
                             )
-                        );?>
+                        );
+        }
+        ?>
         <table cellpadding="0" cellspacing="0">
             <thead>
                 <tr>
@@ -35,8 +42,8 @@
                     <td><?= h($module->module_title) ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('View'), ['controller'=>'modules', 'action' => 'view', $module->module_id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['controller'=>'modules', 'action' => 'edit', $module->module_id]) ?>
-                        <?= $this->Form->postLink(__('Delete'), ['controller'=>'modules', 'action' => 'delete', $module->module_id], ['confirm' => __('Are you sure you want to delete # {0}?', $module->module_id)]) ?>
+                        <?php if ($perm == 1) echo $this->Html->link(__('Edit'), ['controller'=>'modules', 'action' => 'edit', $module->module_id]) ?>
+                        <?php //if ($perm == 1) echo $this->Form->postLink(__('Delete'), ['controller'=>'modules', 'action' => 'delete', $module->module_id], ['confirm' => __('Are you sure you want to delete # {0}?', $module->module_id)]) ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

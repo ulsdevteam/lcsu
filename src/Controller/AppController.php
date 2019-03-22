@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -12,10 +13,14 @@
  * @since     0.2.9
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
+use Cake\Cache\Cache;
+use App\Auth\EnvAuthenticate;
 
 /**
  * Application Controller
@@ -25,7 +30,7 @@ use Cake\Event\Event;
  *
  * @link https://book.cakephp.org/3.0/en/controllers.html#the-app-controller
  */
-class AppController extends Controller
+class AppController extends Controller 
 {
 
     /**
@@ -37,7 +42,7 @@ class AppController extends Controller
      *
      * @return void
      */
-    public function initialize()
+    public function initialize() 
     {
         parent::initialize();
 
@@ -50,6 +55,59 @@ class AppController extends Controller
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
-        //$this->loadComponent('Security');
+        $this->loadComponent('Security');
+        $this->loadComponent('Auth', [
+            'authenticate' => [
+                'Env' => [
+                    'fields' => ['username' => 'username']
+                ],
+            ],
+            'authorize' => 'Controller',
+            'storage' => 'Memory'
+        ]);
     }
+
+    /**
+     * Block error messages from PHP error messages, show $user issue 
+     * Comment beforeRender function to check PHP error messages
+     */
+    public function beforeRender(Event $event)
+    {
+        if ($this->Auth->user())
+            $this->set('cur_user', $this->Auth->user());
+    }
+    
+    public function isAuthorized($user) 
+    {   
+        if ($user == NULL)
+            $this->blockInvalidUser();
+        $user = $this->Auth->user();
+        $currentAction = $this->request->getParam('action');
+        switch ($user['permission_id']) {
+            case 1:
+                break;
+            case 2:
+                if ($currentAction === 'add' || $currentAction === 'edit' || $currentAction === 'delete') {
+                    $this->actionNotAllow();
+                }
+                break;
+            default:
+                $this->blockInvalidUser();
+                break;
+        }
+        
+        return true;
+    }
+    
+    public function blockInvalidUser() 
+    {
+        $this->redirect(['controller' => 'error', 'action' => 'invalid_user']);
+    }
+    
+    public function actionNotAllow() 
+    {
+        $this->Flash->error(__('You are not allow to access this location.'));
+        $this->redirect(['action' => 'index']);
+    }
+
 }

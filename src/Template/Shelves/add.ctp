@@ -5,7 +5,7 @@
  */
 ?>
 <div class="shelves form content" id="app">
-    <?= $this->Form->create($shelf, ['id' => 'add_shelf']) ?>
+    <?= $this->Form->create($shelf, ['id' => 'add_shelf', 'ref' => 'form']) ?>
     <fieldset>
         <legend><?= __('Add Shelf') ?></legend>
         <?php
@@ -16,21 +16,27 @@
             } else {
                 echo $this->Form->control('module_id', ['options' => $modules, 'empty' => true]);
             }
+            $this->Form->unlockField('traysize_id');
         ?>
-        <label for="traysizes">Traysize</label>
-        <select name="traysize_id" form="add_shelf">
-            <option value=""></option>
-            <option v-for="value in cur_traysizes" :value="value.id">{{value.text}}</option>
-        </select>
+        <div class="input select">
+            <label for="traysize_id">Tray size</label>
+            <select name="traysize_id" form="add_shelf">
+                <option value=""></option>
+                <option v-for="value in cur_traysizes" :value="value.id">{{value.text}}</option>
+            </select>
+        </div>
+        
     </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
     <?= $this->Form->end() ?>
+    <?= $this->Form->button(__('Submit'), ['v-on:click' => 'goNext']) ?>
+    
 </div>
 <script type="text/javascript">
     new Vue({
         el: '#app',
         data: {
             info: [],
+            statusModel: 2,
             input_height: 0,
             traysizes: [],
             cur_traysizes: [{0:'type in shelf height first'}]
@@ -45,6 +51,9 @@
                         }
                     }
                 }
+            },
+            goNext: function(e) {
+                this.$refs.form.submit();
             }
         },
         mounted () {

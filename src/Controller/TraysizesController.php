@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-
+use Cake\Event\Event;
 /**
  * Traysizes Controller
  *
@@ -12,7 +12,6 @@ use App\Controller\AppController;
  */
 class TraysizesController extends AppController
 {
-
     /**
      * Index method
      *

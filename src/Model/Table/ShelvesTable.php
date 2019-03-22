@@ -78,7 +78,11 @@ class ShelvesTable extends Table
             ->scalar('tray_category')
             ->maxLength('tray_category', 1)
             ->allowEmpty('tray_category');
-
+        
+        $validator
+            ->integer('traysize_id')
+            ->allowEmpty('traysize_id');
+        
         $validator
             ->scalar('shelf_title')
             ->maxLength('shelf_title', 3)

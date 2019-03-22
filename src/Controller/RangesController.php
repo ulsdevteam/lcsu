@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Event\Event;
 
 /**
  * Ranges Controller
@@ -10,15 +12,35 @@ use App\Controller\AppController;
  *
  * @method \App\Model\Entity\Range[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class RangesController extends AppController
+class RangesController extends AppController 
 {
+
+    public function isAuthorized($user) 
+    {
+        return parent::isAuthorized($user);
+//        $user = $this->Auth->user();
+//        $currentAction = $this->request->getParam('action');
+//        switch ($user['permission_id']) {
+//            case 1:
+//                break;
+//            case 2:
+//                if ($currentAction === 'add' || $currentAction === 'edit' || $currentAction === 'delete') {
+//                    $this->actionNotAllow();
+//                }
+//                break;
+//            default:
+//                $this->blockInvalidUser();
+//                break;
+//        }
+//        return true;
+    }
 
     /**
      * Index method
      *
      * @return \Cake\Http\Response|void
      */
-    public function index()
+    public function index() 
     {
         $ranges = $this->paginate($this->Ranges);
 
@@ -32,7 +54,7 @@ class RangesController extends AppController
      * @return \Cake\Http\Response|void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view($id = null) 
     {
         $range = $this->Ranges->get($id, [
             'contain' => []
@@ -47,7 +69,7 @@ class RangesController extends AppController
      *
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add() 
     {
         $range = $this->Ranges->newEntity();
         if ($this->request->is('post')) {
@@ -69,7 +91,7 @@ class RangesController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit($id = null) 
     {
         $range = $this->Ranges->get($id, [
             'contain' => []
@@ -93,7 +115,7 @@ class RangesController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete($id = null) 
     {
         $this->request->allowMethod(['post', 'delete']);
         $range = $this->Ranges->get($id);
@@ -105,4 +127,5 @@ class RangesController extends AppController
 
         return $this->redirect($this->referer());
     }
+
 }

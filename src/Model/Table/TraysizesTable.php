@@ -20,7 +20,6 @@ use Cake\Validation\Validator;
  */
 class TraysizesTable extends Table
 {
-
     /**
      * Initialize method
      *

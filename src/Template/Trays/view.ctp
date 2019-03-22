@@ -5,15 +5,13 @@
  */
 ?>
 <div class="trays view content">
-    <?=$this->Html->link( __('Edit'),
-                        ['action' => 'edit', $tray->tray_id],
-                        ['class' => 'func-btn']
-                    );?>
-    <p class='func-btn'> | </p>
-    <?= $this->Form->postLink(__('Delete'),
-                        ['action' => 'delete', $tray->tray_id],
-                        ['escape' => false, 'confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id), 'class' => 'func-btn']
-                    ); ?>
+    <?php 
+        $perm = $cur_user['permission_id'];
+        echo $this->Html->link(__('Print'), ['action' => 'printLabel', $tray->tray_id], ['class'=>'func-btn tooltips', 'title' => 'Print this tray barcode']); 
+        if ($perm == 1) echo $this->Html->link( __('Edit'), ['action' => 'edit', $tray->tray_id], ['class' => 'func-btn']);
+    ?>
+    <!--<p class='func-btn'> | </p>-->
+
 
     <table class="vertical-table">
         <tr>
@@ -49,7 +47,6 @@
                     <td><?= h($book->book_barcode) ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('View'), ['controller' => 'Books', 'action' => 'view', $book->book_id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['controller' => 'Books', 'action' => 'edit', $book->book_id]) ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use App\Utility\PhpNetworkLprPrinter;
 
 /**
  * Modules Controller
@@ -118,5 +119,27 @@ class ModulesController extends AppController
         }
 
         return $this->redirect($this->referer());
+    }
+    
+    /**
+     * Print shelf Labels
+     * 
+     * @param string|null $id module id.
+     *      */
+    public function printLabels($id = null) 
+    {
+        $module = $this->Modules->get($id, [
+            'contain' => []
+        ]);
+        $shelves = $this->Modules->Shelves->find('all', ['order' => ['shelf_title' => 'DESC']])->where(['module_id' => $id]);
+        $lpr = new PhpNetworkLprPrinter();
+        
+        if ($lpr) {
+            foreach ($shelves as $shelf) {
+                $lpr->printShelfLabel($shelf->shelf_barcode);
+                $this->Flash->success(__("Label: ".$shelf->shelf_barcode));
+            }            
+        }
+        return $this->redirect(['action' => 'view', $module->module_id]);
     }
 }

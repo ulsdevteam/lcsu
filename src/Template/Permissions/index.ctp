@@ -1,12 +1,12 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\Traysize[]|\Cake\Collection\CollectionInterface $traysizes
+ * @var \App\Model\Entity\Permission[]|\Cake\Collection\CollectionInterface $permissions
  */
 ?>
-<div class="traysizes index content">
-    <h3 class="page-title"><?= __('Traysizes') ?></h3>
-    <?=$this->Html->link( __('Add Traysize'),
+<div class="permissions index columns content">
+    <h3 class="page-title"><?= __('Permissions') ?></h3>
+    <?=$this->Html->link( __('Add Permission'),
                         array('action' => 'add'),
                         array(
                             'bootstrap-type' => 'primary',
@@ -16,22 +16,20 @@
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col"><?= $this->Paginator->sort('tray_category') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('shelf_height') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('num_trays', "Number of the Tray") ?></th>
+                <th scope="col"><?= $this->Paginator->sort('permission_title') ?></th>
+                <!-- <th scope="col"><?= $this->Paginator->sort('permission_level') ?></th> -->
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($traysizes as $traysize): ?>
+            <?php foreach ($permissions as $permission): ?>
             <tr>
-                <td><?= h($traysize->tray_category) ?></td>
-                <td><?= $this->Number->format($traysize->shelf_height) ?></td>
-                <td><?= $this->Number->format($traysize->num_trays) ?></td>
+                <td><?= h($permission->permission_title) ?></td>
+                <!-- <td><?= $this->Number->format($permission->permission_level) ?></td> -->
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $traysize->traysize_id]) ?>
-                    <!--<?= $this->Html->link(__('Edit'), ['action' => 'edit', $traysize->traysize_id]) ?>--!>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $traysize->traysize_id], ['confirm' => __('Are you sure you want to delete # {0}?', $traysize->traysize_id)]) ?>
+                    <?= $this->Html->link(__('View'), ['action' => 'view', $permission->permission_id]) ?>
+                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $permission->permission_id]) ?>
+                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $permission->permission_id], ['confirm' => __('Are you sure you want to delete # {0}?', $permission->permission_id)]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>

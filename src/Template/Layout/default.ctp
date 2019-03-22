@@ -48,12 +48,6 @@ $cakeDescription = 'LCSU';
             <?= $this->Form->end() ?>
         </div>
 
-
-        <!-- <div class="top-bar-section">
-            <ul class="right">
-                <li><?= $this->Html->link(__('Log out'), []) ?></li>
-            </ul>
-        </div> -->
     </nav>
     <nav class="large-2 medium-3 columns" data-topbar role="navigation">
         <?php

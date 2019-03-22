@@ -53,7 +53,17 @@
                             if(this.bookList[i]['status'] == 'Uncheck') {
                                 this.count++;
                                 if (this.count == this.bookList.length) {
-                                    window.location = "<?= $this->Url->build(array('controller' => 'trays', 'action' => 'scan_end', $this->request->getQuery('tray_id'),'count' => $this->request->getQuery('count'))); ?>";
+                                    //window.location = "<?= $this->Url->build(array('controller' => 'trays', 'action' => 'scan_end', $this->request->getQuery('tray_id'),'source' => 'validate','count' => $this->request->getQuery('count'))); ?>";
+                                    window.location = "<?= $this->Url->build([
+                                                            'controller' => 'trays',
+                                                            'action' => 'scan_end',
+                                                            $this->request->getQuery('tray_id'),
+                                                            '?' => [
+                                                                'source' => 'validate',
+                                                                'count' => $this->request->getQuery('count')
+                                                            ]
+                                                        ], ['escape' => false])?>";
+                                    
                                 }
                             }
                             this.bookList[i]['status'] = 'Check';

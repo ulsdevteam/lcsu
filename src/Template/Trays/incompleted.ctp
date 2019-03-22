@@ -9,7 +9,7 @@
     <fieldset>
         <legend><?= __('To complete a tray') ?></legend>
         <?php
-            echo $this->Form->control('num_trays', ['label'=>'The amount of books in this tray', 'autofocus' => 'autofocus']);
+            echo $this->Form->control('num_books', ['label'=>'The amount of books in this tray', 'autofocus' => 'autofocus']);
             echo $this->Form->control('tray_barcode', ['value' => '', 'placeholder' => $tray->tray_barcode, 'v-model' => 'input_tray', 'v-on:keyup.13'=> 'goNext']);
         ?>
     </fieldset>

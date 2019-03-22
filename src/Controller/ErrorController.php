@@ -67,4 +67,9 @@ class ErrorController extends AppController
     public function afterFilter(Event $event)
     {
     }
+    
+    public function invalidUser() 
+    {
+        $this->viewBuilder()->setTemplatePath('invalidUser');
+    }
 }

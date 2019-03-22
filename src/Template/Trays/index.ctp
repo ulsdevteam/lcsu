@@ -23,7 +23,7 @@
                 <?php foreach ($trays as $tray): ?>
                 <tr>
                     <td><?= h($tray->tray_barcode) ?></td>
-                    <td><span class="status"><?= h($tray->status->status_des) ?><span></td>
+                    <td><span class="status"><?= h($tray->status->status_des) ?></span></td>
                     <td><?= h($tray->created) ?></td>
                     <td><?= h($tray->modified) ?></td>
                     <td><?= h($tray->modified_user) ?></td>
@@ -33,7 +33,7 @@
                             switch ($filter) {
                                 case 'incompleted':
                                     echo $this->Html->link(__('Review'), ['action' => 'incompleted', $tray->tray_id]);
-                                    echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]);
+                                    /*echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]);*/
                                     break;
                                 case 'validate':
                                     if ($tray->modified_user != env('REMOTE_USER', true)) {
@@ -43,7 +43,7 @@
                                 default:
                                     echo $this->Html->link(__('View'), ['action' => 'view', $tray->tray_id]);
                                     echo $this->Html->link(__('Edit'), ['action' => 'edit', $tray->tray_id]);
-                                    echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]);
+                                    //echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]);
                                     break;
                             }
                         ?>

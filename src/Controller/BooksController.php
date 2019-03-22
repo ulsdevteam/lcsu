@@ -12,7 +12,6 @@ use App\Controller\AppController;
  */
 class BooksController extends AppController
 {
-
     /**
      * Index method
      *
@@ -132,11 +131,13 @@ class BooksController extends AppController
                     // Wrap up the process
                     return $this->redirect(['controller' => 'trays',
                                             'action' => 'scanEnd/'.$book['tray_id'],
+                                            'source' => $this->request->getQuery('source'),
                                             'count' => $count]);
                 } else {
                     // Keep to scanning the next book
                     return $this->redirect(['action' => 'scan',
                                             'tray_id' => $book['tray_id'],
+                                            'source' => $this->request->getQuery('source'),
                                             'count' => $count,
                                             'id' => $id+1]);
                 }

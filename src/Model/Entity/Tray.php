@@ -10,8 +10,6 @@ use Cake\ORM\Entity;
  * @property string|null $tray_size
  * @property string $tray_barcode
  * @property int|null $shelf_height
- * @property int|null $current_trays
- * @property int|null $num_trays
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime $modified
  * @property int|null $modified_user

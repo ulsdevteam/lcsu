@@ -5,7 +5,12 @@
  */
 ?>
 <div class="shelves view content">
-    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $shelf->shelf_id], ['class' => 'func-btn']) ?>
+
+    <?php 
+        $perm = $cur_user['permission_id'];
+        echo $this->Html->link(__('Print'), ['action' => 'printLabel', $shelf->shelf_id], ['class'=>'func-btn tooltips', 'title' => 'Print this shelf barcode']); 
+        if ($perm == 1 )echo $this->Html->link(__('Edit'), ['action' => 'edit', $shelf->shelf_id], ['class'=>'func-btn']); 
+    ?>
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('Shelf Barcode') ?></th>
@@ -21,12 +26,14 @@
         </tr>
     </table>
 
-    <div class="child-table">
+    <?= $this->Html->link(__('Print'), ['action' => 'printLabels', $shelf->shelf_id], ['class'=>'func-btn tooltips', 'title' => 'Print all tray labels in this shelf']); ?>
+    <div class="index-table">
         <h5 class="page-title">Located trays</h5>
         <table cellpadding="0" cellspacing="0">
             <thead>
                 <tr>
                     <th scope="col"><?= $this->Paginator->sort('tray_barcode') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('status') ?></th>
                     <th scope="col"><?= $this->Paginator->sort('created') ?></th>
                     <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
                     <th scope="col"><?= $this->Paginator->sort('modified_user') ?></th>
@@ -37,13 +44,14 @@
                 <?php foreach ($trays as $tray): ?>
                 <tr>
                     <td><?= h($tray->tray_barcode) ?></td>
+                    <td><span class="status"><?= h($tray->status->status_des) ?><span></td>
                     <td><?= h($tray->created) ?></td>
                     <td><?= h($tray->modified) ?></td>
                     <td><?= h($tray->modified_user) ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('View'), ['controller' => 'Trays', 'action' => 'view', $tray->tray_id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['controller' => 'Trays','action' => 'edit', $tray->tray_id]) ?>
-                        <?= $this->Form->postLink(__('Delete'), ['controller' => 'Trays','action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]) ?>
+                        <?php if ($tray->status_id >=3) echo $this->Html->link(__('Export'), ['controller' => 'Trays','action' => 'export', $tray->tray_id] , ['v-on:click' => 'download('.$tray->tray_id.')']) ?>
+                        <?php //if ($perm == 1) echo $this->Form->postLink(__('Delete'), ['controller' => 'Trays','action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]) ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -60,4 +68,5 @@
         </ul>
         <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
     </div>
+        
 </div>
