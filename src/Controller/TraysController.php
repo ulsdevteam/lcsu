@@ -66,7 +66,7 @@ class TraysController extends AppController
         $tray = $this->Trays->newEntity();
         if ($this->request->is('post')) {
             $tray = $this->Trays->patchEntity($tray, $this->request->getData());
-            $tray->modified_user = env('REMOTE_USER', true);
+            $tray->modified_user = $this->Auth->user('username');
             $tray->created = date("Y-m-d H:i:s");
             $tray->shelf_id = $this->request->getQuery('shelf_id');
             $shelf_addr = $this->Trays->Shelves->find('all')
@@ -105,7 +105,7 @@ class TraysController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $tray = $this->Trays->patchEntity($tray, $this->request->getData());
-            $tray->modified_user = env('REMOTE_USER', true);
+            $tray->modified_user = $this->Auth->user('username');
             if ($this->Trays->save($tray)) {
                 $this->Flash->success(__('The tray has been saved.'));
                 return $this->redirect(['action' => 'index']);
@@ -157,7 +157,7 @@ class TraysController extends AppController
              if (!isset($tray)) {
                 $this->Flash->error(__('The tray is not in the database.'));
             } else {
-                $tray->modified_user = env('REMOTE_USER', true);
+                $tray->modified_user = $this->Auth->user('username');
                 if ($this->Trays->save($tray)) {
 
                     $this->Flash->success(__('The tray has been saved.'));
@@ -193,7 +193,7 @@ class TraysController extends AppController
                 $this->Flash->error(__('The tray barcode or the amount of books is wrong.'));
             }
             $tray->status_id = intval($tray->status_id) + 1;
-            $tray->modified_user = env('REMOTE_USER', true);
+            $tray->modified_user = $this->Auth->user('username');
             if ($this->Trays->save($tray)) {
                 return $this->redirectScanInit();
             }
@@ -232,7 +232,7 @@ class TraysController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $tray = $this->Trays->patchEntity($tray, $this->request->getData());
-            $tray->modified_user = env('REMOTE_USER', true);
+            $tray->modified_user = $this->Auth->user('username');
             $books = $this->Trays->Books->find('all', ['limit' => 200])
                     ->where(['tray_id' => $id]);
             if (count($books->toArray()) > 0) {
@@ -267,7 +267,7 @@ class TraysController extends AppController
             if (count($books->toArray()) != $this->request->getData('num_books')) {
                 $this->Trays->Books->deleteAll(['tray_id' => $tray->tray_id]);
                 $tray->status_id = 1;
-                $tray->modified_user = env('REMOTE_USER', true);
+                $tray->modified_user = $this->Auth->user('username');
                 if ($this->Trays->save($tray)) {
                     return $this->redirect(['controller' => 'books',
                                 'action' => 'scan',
@@ -335,12 +335,13 @@ class TraysController extends AppController
         ]);
 
         $lpr = new PhpNetworkLprPrinter();
-        if ($lpr->getErrStr()) {
-            $this->Flash->error($lpr->getErrStr());
-        }
         if ($lpr) {
-            $lpr->printTrayLabel($tray->tray_barcode);
-            $this->Flash->success(__("Label: ".$tray->tray_barcode));
+            $result = $lpr->printTrayLabel($tray->tray_barcode);
+            if ($result) {
+                $this->Flash->error(__($result));
+            } else {
+                $this->Flash->success(__("Label: ".$tray->tray_barcode));
+            }
         }
         return $this->redirect(['controller' => 'Trays', 'action' => 'view', $tray->tray_id]);
     }

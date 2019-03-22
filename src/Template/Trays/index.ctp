@@ -36,7 +36,7 @@
                                     /*echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]);*/
                                     break;
                                 case 'validate':
-                                    if ($tray->modified_user != env('REMOTE_USER', true)) {
+                                    if ($tray->modified_user != $cur_user['username']) {
                                         echo $this->Html->link(__('Validate'), ['action' => 'validate', $tray->tray_id]);
                                     }
                                     break;

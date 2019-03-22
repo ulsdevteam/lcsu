@@ -43,7 +43,7 @@ class RangesController extends AppController
     public function index() 
     {
         $ranges = $this->paginate($this->Ranges);
-
+        
         $this->set(compact('ranges'));
     }
 

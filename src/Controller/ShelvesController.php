@@ -150,8 +150,12 @@ class ShelvesController extends AppController
         $lpr = new PhpNetworkLprPrinter();
 
         if ($lpr) {
-            $lpr->printShelfLabel($shelf->shelf_barcode);
-            $this->Flash->success(__("Label: ".$shelf->shelf_barcode));
+            $result = $lpr->printShelfLabel($shelf->shelf_barcode);
+            if ($result) {
+                $this->Flash->error(__($result));
+            } else {
+                $this->Flash->success(__("Label: ".$shelf->shelf_barcode)); 
+            }
         }
         return $this->redirect(['action' => 'view', $shelf->shelf_id]);
     }
@@ -172,8 +176,12 @@ class ShelvesController extends AppController
         
         if ($lpr) {
             foreach ($trays as $tray) {
-                $lpr->printTrayLabel($tray->tray_barcode);
-                $this->Flash->success(__("Label: ".$tray->tray_barcode));
+                $result = $lpr->printTrayLabel($tray->tray_barcode);
+                if ($result) {
+                    $this->Flash->error(__($result));
+                } else {
+                    $this->Flash->success(__("Label: ".$tray->tray_barcode));
+                }
             }
         }
         return $this->redirect(['action' => 'view', $shelf->shelf_id]);
@@ -225,7 +233,7 @@ class ShelvesController extends AppController
             $this->Shelves->save($shelf);
             // Generate new trays
             for ( $i = 1 ; $i <= intVal($traysize->num_trays) ; $i++) {
-                $tray = $this->Shelves->Trays->newEntity(['tray_barcode' => $shelf->shelf_barcode."-T".sprintf("%02d", $i), 'modified_user' => env('REMOTE_USER', true), 'shelf_id' => $shelf->shelf_id]);
+                $tray = $this->Shelves->Trays->newEntity(['tray_barcode' => $shelf->shelf_barcode."-T".sprintf("%02d", $i), 'modified_user' => $this->Auth->user('username'), 'shelf_id' => $shelf->shelf_id]);
                 $tray->created = date("Y-m-d H:i:s");
                 $tray->tray_title = 'T'.sprintf("%02d", $i);
                 $this->Shelves->Trays->save($tray);

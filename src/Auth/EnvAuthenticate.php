@@ -81,8 +81,9 @@ class EnvAuthenticate extends BaseAuthenticate {
  * @param CakeResponse $response The response to add headers to.
  * @return mixed Either false on failure, or an array of user data on success.
  */
-	public function authenticate(ServerRequest $request, Response $response) {
-		return $this->getUser($request);
+	public function authenticate(ServerRequest $request, Response $response) 
+        {
+            return $this->getUser($request);
 	}
 /**
  * Get a user based on information in the request. Used by cookie-less auth for stateless clients.
@@ -90,14 +91,15 @@ class EnvAuthenticate extends BaseAuthenticate {
  * @param CakeRequest $request Request object.
  * @return mixed Either false or an array of user information
  */
-	public function getUser(ServerRequest $request) {
-                //$username = "lauren@pitt.edu";
-                $username = env('REMOTE_USER', true);
-                if (empty($username)) {
-                    return false;
-                }
-                $username = preg_replace('/@.*$/', '', $username);;
-                return $this->_findUser($username);
+	public function getUser(ServerRequest $request) 
+        {
+            //$username = "lauren@pitt.edu";
+            $username = env('REMOTE_USER', true);
+            if (empty($username)) {
+                return false;
+            }
+            $username = preg_replace('/@.*$/', '', $username);;
+            return $this->_findUser($username);
 	}
    
 }

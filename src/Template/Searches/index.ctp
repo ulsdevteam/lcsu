@@ -42,14 +42,14 @@
                                     echo $this->Html->link(__('Review'), ['action' => 'incompleted', $result->tray_id]);
                                     break;
                                 case 'validate':
-                                    if ($result->modified_user != env('REMOTE_USER', true)) {
+                                    if ($result->modified_user != $cur_user['username']) {
                                         echo $this->Html->link(__('Validate'), ['action' => 'validate', $result->tray_id]);
                                     }
                                     break;
                                 default:
                                     echo $this->Html->link(__('View'), ['controller' => 'Trays', 'action' => 'view', $result->tray_id]);
                                     echo $this->Html->link(__('Edit'), ['controller' => 'Trays', 'action' => 'edit', $result->tray_id]);
-                                    echo $this->Form->postLink(__('Delete'), ['controller' => 'Trays', 'action' => 'delete', $result->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $result->tray_id)]);
+                                    //echo $this->Form->postLink(__('Delete'), ['controller' => 'Trays', 'action' => 'delete', $result->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $result->tray_id)]);
                                     break;
                             }
                             echo "</td>";
