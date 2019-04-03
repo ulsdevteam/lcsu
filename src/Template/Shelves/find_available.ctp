@@ -5,7 +5,7 @@
  */
 ?>
 <div class="shelves form content">
-    <?= $this->Form->create() ?>
+    <?= $this->Form->create($traysize, ['type' => 'get']) ?>
     <fieldset>
         <legend><?= __('Choose tray size') ?></legend>
         <?php

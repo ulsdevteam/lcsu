@@ -40,7 +40,8 @@ class ShelvesController extends AppController
         $shelf = $this->Shelves->get($id);
         $module = $this->Shelves->Modules->get($shelf->module_id);
         $trays = $this->paginate($this->Shelves->Trays->find('all', ['order' => ['tray_title' => 'ASC']])->where(['shelf_id' => $id])->contain(['Status']));
-        $traysize = $this->Shelves->Traysizes->get($shelf->traysize_id);
+        if ($shelf->traysize_id)
+            $traysize = $this->Shelves->Traysizes->get($shelf->traysize_id);
         $this->set(compact('shelf', 'module', 'trays', 'traysize'));
     }
 
@@ -188,17 +189,12 @@ class ShelvesController extends AppController
         $traysizes = $this->Shelves->Traysizes->find('list',
                                                     ['keyField' => 'traysize_id','valueField' => 'traysize_option',
                                                     'limit' => 200]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            // Redirect to the same page but different traysize.
-            return $this->redirect(['action' => 'findAvailable', 'traysizes' => $this->request->getData('traysizes')]);
+        if ($this->request->getQuery('traysizes')) {
+            $traysize = $this->Shelves->Traysizes->get( $this->request->getQuery('traysizes'));
         } else {
-            if ($this->request->getQuery('traysizes')) {
-                $traysize = $this->Shelves->Traysizes->get( $this->request->getQuery('traysizes'));
-            } else {
-                $traysize = $this->Shelves->Traysizes->find('all')->first();
-            }
-            $shelves = $this->paginate($this->Shelves->find('all')->where(['shelf_height' => $traysize->shelf_height, 'traysize_id is null']));
+            $traysize = $this->Shelves->Traysizes->find('all')->first();
         }
+        $shelves = $this->paginate($this->Shelves->find('all')->where(['shelf_height' => $traysize->shelf_height, 'traysize_id is null']));
         $this->set(compact('traysizes', 'shelves', 'traysize'));
     }
     
