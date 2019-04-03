@@ -18,7 +18,7 @@ class PhpNetworkLprPrinter{
          * @access      protected
          * @since       1.0
          */
-        var $_host="sato1.library.pitt.edu";
+        var $_host;
 
         /**
          * Printer's Port. Default port 515 (see constructor), but it can change with the function setPort
@@ -81,7 +81,7 @@ class PhpNetworkLprPrinter{
          * @param       integer The printer's port
          * @since       1.0
          */
-        public function __construct($host="sato1.library.pitt.edu", $port=515) {
+        public function __construct($host = null, $port = null) {
                 $this->_host = $host;
                 $this->_port = $port;
         }

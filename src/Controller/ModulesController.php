@@ -35,14 +35,9 @@ class ModulesController extends AppController
      */
     public function view($id = null)
     {
-        $module = $this->Modules->get($id, [
-            'contain' => []
-        ]);
-        $range = $this->Modules->Ranges->get($module->range_id, [
-            'contain' => []
-        ]);
+        $module = $this->Modules->get($id);
+        $range = $this->Modules->Ranges->get($module->range_id);
         $shelves = $this->Modules->Shelves->find('all')->where(['module_id' => $id]);
-        //$this->set('module', $module);
         $shelves = $this->paginate($shelves);
         $this->set(compact('module', 'range', 'shelves'));
     }
@@ -83,9 +78,7 @@ class ModulesController extends AppController
      */
     public function edit($id = null)
     {
-        $module = $this->Modules->get($id, [
-            'contain' => []
-        ]);
+        $module = $this->Modules->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $module = $this->Modules->patchEntity($module, $this->request->getData());
             if ($this->Modules->save($module)) {
@@ -128,18 +121,21 @@ class ModulesController extends AppController
      *      */
     public function printLabels($id = null) 
     {
-        $module = $this->Modules->get($id, [
-            'contain' => []
-        ]);
-        $shelves = $this->Modules->Shelves->find('all', ['order' => ['shelf_title' => 'DESC']])->where(['module_id' => $id]);
-        $lpr = new PhpNetworkLprPrinter();
-        
-        if ($lpr) {
-            foreach ($shelves as $shelf) {
-                $lpr->printShelfLabel($shelf->shelf_barcode);
-                $this->Flash->success(__("Label: ".$shelf->shelf_barcode));
-            }            
+        if ($id) {
+            $module = $this->Modules->get($id);
+            $shelves = $this->Modules->Shelves->find('all', ['order' => ['shelf_title' => 'DESC']])->where(['module_id' => $id]);
+            $lpr = new PhpNetworkLprPrinter();
+
+            if ($lpr) {
+                foreach ($shelves as $shelf) {
+                    $lpr->printShelfLabel($shelf->shelf_barcode);
+                }            
+            } else {
+                $this->Flash->error(__("Cannot connect to printer."));
+            }
+            return $this->redirect(['action' => 'view', $module->module_id]);
         }
-        return $this->redirect(['action' => 'view', $module->module_id]);
+        $this->Flash->error(__('The module id is missing.'));
+        return $this->redirect($this->referer());
     }
 }

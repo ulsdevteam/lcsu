@@ -1,4 +1,5 @@
 <?php
+use Cake\Core\Configure;
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Shelf[]|\Cake\Collection\CollectionInterface $shelves
@@ -15,11 +16,16 @@
                         echo "<th scope='col'>".$this->Paginator->sort('book_barcode')."</th>";
                         echo "<th scope='col' class='actions'>".__('Actions')."</th>";
                     } else {
-                        echo "<th scope='col'>".$this->Paginator->sort('tray_barcode')."</th>";
-                        echo "<th scope='col'>".$this->Paginator->sort('created')."</th>";
-                        echo "<th scope='col'>".$this->Paginator->sort('modified')."</th>";
-                        echo "<th scope='col'>".$this->Paginator->sort('modified_user')."</th>";
-                        echo "<th scope='col' class='actions'>".__('Actions')."</th>";
+                        if (strpos($keyword, 'T')) {
+                            echo "<th scope='col'>".$this->Paginator->sort('tray_barcode')."</th>";
+                            echo "<th scope='col'>".$this->Paginator->sort('created')."</th>";
+                            echo "<th scope='col'>".$this->Paginator->sort('modified')."</th>";
+                            echo "<th scope='col'>".$this->Paginator->sort('modified_user')."</th>";
+                            echo "<th scope='col' class='actions'>".__('Actions')."</th>";
+                        } else {
+                            echo "<th scope='col'>".$this->Paginator->sort('shelf_barcode')."</th>";
+                            echo "<th scope='col' class='actions'>".__('Actions')."</th>";
+                        }
                     }?>
                 </tr>
             </thead>
@@ -31,28 +37,36 @@
                             echo "<td>".h($result->book_barcode)."</td>";
                             echo "<td>".(isset($result->tray_id) ? $this->Html->link('View tray', ['controller' => 'Trays', 'action' => 'view', $result->tray_id]) : '')."</td>";
                         } else {
-                            echo "<td>".h($result->tray_barcode)."</td>";
-                            echo "<td>".h($result->created)."</td>";
-                            echo "<td>".h($result->modified)."</td>";
-                            echo "<td>".h($result->modified_user)."</td>";
-                            echo "<td class='actions'>";
-                            $filter = $this->request->getQuery('filter');
-                            switch ($filter) {
-                                case 'incompleted':
-                                    echo $this->Html->link(__('Review'), ['action' => 'incompleted', $result->tray_id]);
-                                    break;
-                                case 'validate':
-                                    if ($result->modified_user != $cur_user['username']) {
-                                        echo $this->Html->link(__('Validate'), ['action' => 'validate', $result->tray_id]);
-                                    }
-                                    break;
-                                default:
-                                    echo $this->Html->link(__('View'), ['controller' => 'Trays', 'action' => 'view', $result->tray_id]);
-                                    echo $this->Html->link(__('Edit'), ['controller' => 'Trays', 'action' => 'edit', $result->tray_id]);
-                                    //echo $this->Form->postLink(__('Delete'), ['controller' => 'Trays', 'action' => 'delete', $result->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $result->tray_id)]);
-                                    break;
+                            if (strpos($keyword, 'T')) {
+                                echo "<td>".h($result->tray_barcode)."</td>";
+                                echo "<td>".h($result->created)."</td>";
+                                echo "<td>".h($result->modified)."</td>";
+                                echo "<td>".h($result->modified_user)."</td>";
+                                echo "<td class='actions'>";
+                                $filter = $this->request->getQuery('filter');
+                                switch ($filter) {
+                                    case 'incompleted':
+                                        echo $this->Html->link(__('Review'), ['action' => 'incompleted', $result->tray_id]);
+                                        break;
+                                    case 'validate':
+                                        if ($result->modified_user != $cur_user['username']) {
+                                            echo $this->Html->link(__('Validate'), ['action' => 'validate', $result->tray_id]);
+                                        }
+                                        break;
+                                    default:
+                                        echo $this->Html->link(__('View'), ['controller' => 'Trays', 'action' => 'view', $result->tray_id]);
+                                        echo $this->Html->link(__('Edit'), ['controller' => 'Trays', 'action' => 'edit', $result->tray_id]);
+                                        break;
+                                }
+                                echo "</td>";
+                            } else {
+                                echo "<td>".h($result->shelf_barcode)."</td>";
+                                echo "<td class='actions'>";
+                                echo $this->Html->link(__('View'), ['controller' => 'Shelves', 'action' => 'view', $result->shelf_id]);
+                                echo $this->Html->link(__('Print'), ['controller' => 'Shelves', 'action' => 'printLabel', $result->shelf_id]);
+                                if($cur_user['permission_id'] == Configure::read('Managers')) echo $this->Html->link(__('Edit'), ['controller' => 'Shelves', 'action' => 'edit', $result->shelf_id]);
+                                echo "</td>";
                             }
-                            echo "</td>";
                         }
                     ?>
                 </tr>

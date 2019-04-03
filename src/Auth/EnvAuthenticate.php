@@ -22,7 +22,7 @@ namespace App\Auth;
 
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-
+use Cake\Core\Configure;
 use Cake\Auth\BaseAuthenticate;
 /**
  * Environment Based Authentication adapter for AuthComponent.
@@ -94,7 +94,7 @@ class EnvAuthenticate extends BaseAuthenticate {
 	public function getUser(ServerRequest $request) 
         {
             //$username = "lauren@pitt.edu";
-            $username = env('REMOTE_USER', true);
+            $username = Configure::read('Env_user');
             if (empty($username)) {
                 return false;
             }

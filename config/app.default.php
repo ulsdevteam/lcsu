@@ -383,4 +383,21 @@ return [
     'Session' => [
         'defaults' => 'php',
     ],
+    
+    // Define user permission
+    'Managers' => 0,
+    'Scanners' => 0,
+    
+    // Define tray statys
+    'Incompleted' => 0,
+    'Validate'    => 0,
+    'Completed'   => 0,
+    'Exported'    => 0,
+    
+    // printer configuration
+    'HOST' => "**",
+    'PORT' => null,
+    
+    // Current user
+    'Env_user' => env('*', true),
 ];

@@ -33,9 +33,7 @@ class TraysizesController extends AppController
      */
     public function view($id = null)
     {
-        $traysize = $this->Traysizes->get($id, [
-            'contain' => []
-        ]);
+        $traysize = $this->Traysizes->get($id);
 
         $this->set('traysize', $traysize);
     }
@@ -69,9 +67,7 @@ class TraysizesController extends AppController
      */
     public function edit($id = null)
     {
-        $traysize = $this->Traysizes->get($id, [
-            'contain' => []
-        ]);
+        $traysize = $this->Traysizes->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $traysize = $this->Traysizes->patchEntity($traysize, $this->request->getData());
             if ($this->Traysizes->save($traysize)) {

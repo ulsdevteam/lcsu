@@ -34,9 +34,7 @@ class PermissionsController extends AppController
      */
     public function view($id = null)
     {
-        $permission = $this->Permissions->get($id, [
-            'contain' => []
-        ]);
+        $permission = $this->Permissions->get($id);
 
         $this->set('permission', $permission);
     }
@@ -70,9 +68,7 @@ class PermissionsController extends AppController
      */
     public function edit($id = null)
     {
-        $permission = $this->Permissions->get($id, [
-            'contain' => []
-        ]);
+        $permission = $this->Permissions->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $permission = $this->Permissions->patchEntity($permission, $this->request->getData());
             if ($this->Permissions->save($permission)) {

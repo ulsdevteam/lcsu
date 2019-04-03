@@ -34,9 +34,7 @@ class StatusController extends AppController
      */
     public function view($id = null)
     {
-        $status = $this->Status->get($id, [
-            'contain' => []
-        ]);
+        $status = $this->Status->get($id);
 
         $this->set('status', $status);
     }
@@ -70,9 +68,7 @@ class StatusController extends AppController
      */
     public function edit($id = null)
     {
-        $status = $this->Status->get($id, [
-            'contain' => []
-        ]);
+        $status = $this->Status->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $status = $this->Status->patchEntity($status, $this->request->getData());
             if ($this->Status->save($status)) {

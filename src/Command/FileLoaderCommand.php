@@ -35,7 +35,7 @@ class FileLoaderCommand extends Command
     * Command classes must implement an execute() method
     * that does the bulk of their work. This method is
     * called when a command is invoked
-    * sudo su apache -s/bin/bash -c "bin/cake FileLoader -t ew"
+    * sudo su apache -s/bin/bash -c "bin/cake FileLoader -t file.csv"
     */
     public function execute(Arguments $args, ConsoleIo $io)
     {
@@ -48,10 +48,12 @@ class FileLoaderCommand extends Command
     }
 
     /**
-    * @param $row row in *.csv Shelfaddr, shelf_height, tray_size
-    * @param $segs "R01-M02-S03" split by '-' as an arry ["R01", "M02", "S03"]
-    *  e.g. sudo su apache -s/bin/bash -c "bin/cake FileLoader -s sample_shelves.csv"
-    */
+     * Load shelf data from a csv file 
+     * e.g. sudo su apache -s/bin/bash -c "bin/cake FileLoader -s sample_shelves.csv"
+     * 
+     * @param $input string Filename, e.g. sample_shelves.csv
+     * @param $io ConsoleIo
+     */
     public function loadShelves($input, $io)
     {
         $ranges  = [];
@@ -77,7 +79,7 @@ class FileLoaderCommand extends Command
         $count = 0;
         while(! feof($file)) {
             $row = fgetcsv($file);
-            if ( strpos($row[0], '-')) {
+            if (strpos($row[0], '-')) {
                 $count++;
                 $segs = explode('-', $row[0]);
                 $range_id = (array_key_exists($segs[0], $ranges))? $ranges[$segs[0]] : $this->createRange($segs[0], $ranges);
@@ -96,10 +98,12 @@ class FileLoaderCommand extends Command
     }
 
     /**
-    * @param $row row in *.csv Shelfaddr, Tray_barcode, Book_barcode
-    * @param $segs "R05-M15-S23-T09" split by '-' as an arry ["R05", "M15", "S23", "T09"]
-    * e.g. sudo su apache -s/bin/bash -c "bin/cake FileLoader -t lcsu-barcodes.csv"
-    */
+     * Load tray data from a csv file
+     * e.g. sudo su apache -s/bin/bash -c "bin/cake FileLoader -t lcsu-barcodes.csv"
+     * 
+     * @param $input string Filename
+     * @param $io ConsoleIo
+     */
     public function loadTrays($input, $io)
     {
         $trays = [];
@@ -137,6 +141,14 @@ class FileLoaderCommand extends Command
         fclose($sql_file);
     }
 
+    /**
+     * Create Range method
+     * 
+     * @param $range_title string range title
+     * @param $ranges Array contains range entities
+     * 
+     * @return $id integer Range id
+     */
     public function createRange($range_title, &$ranges)
     {
         $range = $this->Ranges->newEntity(['range_title' => $range_title]);
@@ -145,6 +157,15 @@ class FileLoaderCommand extends Command
         return $range->range_id;
     }
 
+    /**
+     * Create Module method
+     * 
+     * @param $segs Array barcode splits by ',', e.g. ["R05", "M15", "S23", "T09"] 
+     * @param $range_id string Range id
+     * @param $modules Array contains module entities
+     * 
+     * @return integer Module id
+     */
     public function createModule($segs, $range_id, &$modules)
     {
         $module = $this->Modules->newEntity(['module_title' => $segs[1], 'range_id' => $range_id]);
@@ -153,6 +174,15 @@ class FileLoaderCommand extends Command
         return $module->module_id;
     }
 
+    /**
+     * Create Shelf method
+     * 
+     * @param $count string error message
+     * @param $row string error message
+     * @param $segs Array barcode splits by ',', e.g. ["R05", "M15", "S23", "T09"] 
+     * @param $module_id string Module id
+     * @param $traysize_id string Traysize id
+     */
     public function createShelf($count, $row, $segs, $module_id, $traysize_id)
     {
         $obj = ['shelf_barcode' => $row[0],
@@ -171,70 +201,11 @@ class FileLoaderCommand extends Command
         }
     }
 
-    protected function createTray($barcode, $shelf_id, &$trays)
-    {
-        $segs = explode('-', $barcode);
-        $obj = ['tray_barcode' => $barcode,
-                'shelf_id' => $shelf_id,
-                'tray_title' => $segs[3],
-                'modified_user' => get_current_user()];
-        $tray = $this->Trays->newEntity($obj);
-        $this->Trays->save($tray);
-        $trays[$barcode] = $tray->tray_id;
-        return $tray->tray_id;
-    }
-
-    protected function createBook($count, $row, $book_barcode, $tray_id)
-    {
-        $obj = ['tray_id' => $tray_id, 'book_barcode' => $book_barcode];
-        $book = $this->Books->newEntity($obj);
-        if (!$this->Books->save($book)) {
-            $this->addErrorLog($this->error_log, "row ".($count+1).": ".implode(",",$row)." => ".json_encode($obj)); // Q: How to get the reason for error?
-        } else {
-            $this->imported_count++;
-        }
-    }
-
-    protected function createBooks($objs)
-    {
-        $books = $this->Books->newEntities($objs);
-        if (!$this->Books->saveMany($books)) {
-            // $this->addErrorLog($this->error_log, "segement: ".implode(",", $objs));
-        } else {
-            $this->imported_count++;
-        }
-    }
-
-    protected function findShelf($barcode, &$shelves)
-    {
-        $segs = explode('-', $barcode);
-        $shelf_barcode = implode('-', array_slice($segs, 0, 3));
-        if (array_key_exists($shelf_barcode, $shelves))
-            $id = $shelves[$shelf_barcode];
-        else {
-            $id = $this->Shelves->find('list')->where(['shelf_barcode' => $shelf_barcode])->first();
-            if($id) {
-                $shelves[$shelf_barcode] = $id;
-            }
-        }
-        return $id;
-    }
-
-    protected function findTray($barcode, $shelf_id, &$trays)
-    {
-        if (array_key_exists($barcode, $trays))
-            $id = $trays[$barcode];
-        else {
-            $id = $this->Trays->find('list')->where(['tray_barcode' => $barcode])->first();
-            if ($id) {
-                $trays[$barcode] = $id;
-            } else {
-                $id = $this->createTray($barcode, $shelf_id, $trays);
-            }
-        }
-        return $id;
-    }
-
+    /**
+     * Add error log method
+     * 
+     * @param $msg string error message
+     */
     protected function addErrorLog($msg)
     {
         if (!$this->error_log) {
@@ -243,6 +214,13 @@ class FileLoaderCommand extends Command
         fwrite($msg);
     }
 
+    /**
+     * Build Option Parser method
+     * 
+     * @param $parser ConsoleOptionParser
+     * 
+     * @return $parser ConsoleOptionParser
+     */
     protected function buildOptionParser(ConsoleOptionParser $parser)
     {
         $parser

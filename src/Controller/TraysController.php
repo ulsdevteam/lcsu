@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Routing\Router;
 use App\Utility\PhpNetworkLprPrinter;
+use Cake\Core\Configure;
 /**
  * Trays Controller
  *
@@ -27,13 +28,13 @@ class TraysController extends AppController
         $filter = $this->request->getQuery('filter');
         switch ($filter) {
             case 'incompleted':
-                $this->set( 'trays', $this->paginate($this->Trays->find('all')->where(['Trays.status_id' => 1])));
+                $this->set('trays', $this->paginate($this->Trays->find('all')->where(['Trays.status_id' => Configure::read('Incompleted')])));
                 break;
             case 'validate':
-                $this->set( 'trays', $this->paginate($this->Trays->find('all')->where(['Trays.status_id' => 2])));
+                $this->set('trays', $this->paginate($this->Trays->find('all')->where(['Trays.status_id' => Configure::read('Validate')])));
                 break;
             default:
-                $this->set( 'trays', $this->paginate( $this->Trays));
+                $this->set('trays', $this->paginate( $this->Trays));
                 break;
         }
     }
@@ -47,10 +48,7 @@ class TraysController extends AppController
      */
     public function view($id = null)
     {
-        $tray = $this->Trays->get($id, [
-            'contain' => []
-        ]);
-
+        $tray = $this->Trays->get($id);
         $books = $this->paginate($this->Trays->Books->find('all')->where(['tray_id' => $id]));
         $status = $this->Trays->Status->find('all')->where(['status_id' => $tray->status_id]);
         $this->set(compact('tray', 'books', 'status'));
@@ -100,9 +98,7 @@ class TraysController extends AppController
      */
     public function edit($id = null)
     {
-        $tray = $this->Trays->get($id, [
-            'contain' => []
-        ]);
+        $tray = $this->Trays->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $tray = $this->Trays->patchEntity($tray, $this->request->getData());
             $tray->modified_user = $this->Auth->user('username');
@@ -152,8 +148,7 @@ class TraysController extends AppController
      {
          $tray = $this->Trays->newEntity();
          if ($this->request->is('post')) {
-             $tray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
-             
+             $tray = $this->Trays->get($this->request->getData('tray_barcode'));
              if (!isset($tray)) {
                 $this->Flash->error(__('The tray is not in the database.'));
             } else {
@@ -177,32 +172,36 @@ class TraysController extends AppController
     /**
      * ScanEnd method
      *
+     * @param $id string Tray id
+     * 
      * @return \Cake\Http\Response|null Redirects to index.
      */
     public function scanEnd($id = null) 
     {
-        $tray = $this->Trays->get($id, [
-            'contain' => []
-        ]);
+        $tray = $this->Trays->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $tray = $this->Trays->patchEntity($tray, $this->request->getData());
-            // I don't know how to use count(*) here. So, I use toArray() and count() instead.
             $num_books = $this->Trays->Books->find('all', ['limit' => 200])
-                    ->where(['tray_id' => $id]);
-            if (count($num_books->toArray()) != intval($this->request->getQuery('count'))) {
+                    ->where(['tray_id' => $id])->count();
+            if ($num_books != intval($this->request->getQuery('count'))) {
                 $this->Flash->error(__('The tray barcode or the amount of books is wrong.'));
             }
             $tray->status_id = intval($tray->status_id) + 1;
             $tray->modified_user = $this->Auth->user('username');
             if ($this->Trays->save($tray)) {
-                return $this->redirectScanInit();
+                return $this->redirectScanInit($tray);
             }
             $this->Flash->error(__('Fail to wrap up this tray.'));
         }
         $this->set(compact('tray'));
     }
 
-    public function redirectScanInit()
+    /**
+     * Redirect to scan initial method
+     * 
+     * @param object $tray single tray
+     */
+    public function redirectScanInit($tray)
     {
         $source = $this->request->getQuery('source');
         if ($source) {
@@ -227,15 +226,13 @@ class TraysController extends AppController
      */
     public function incompleted($id = null) 
     {
-        $tray = $this->Trays->get($id, [
-            'contain' => []
-        ]);
+        $tray = $this->Trays->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $tray = $this->Trays->patchEntity($tray, $this->request->getData());
             $tray->modified_user = $this->Auth->user('username');
-            $books = $this->Trays->Books->find('all', ['limit' => 200])
-                    ->where(['tray_id' => $id]);
-            if (count($books->toArray()) > 0) {
+            $count_books = $this->Trays->Books->find('all', ['limit' => 200])
+                    ->where(['tray_id' => $id])->count();
+            if ($count_books > 0) {
                 $this->Trays->Books->deleteAll(['tray_id' => $tray->tray_id]);
             }
 
@@ -258,15 +255,17 @@ class TraysController extends AppController
      */
     public function validate($id=null) 
     {
-        $tray = $this->Trays->get($id, [
-            'contain' => []
-            ]);
-        $books = $this->Trays->Books->find('all', ['limit' => 200])
-                ->where(['tray_id' => $id]);
+        $tray = $this->Trays->get($id);
+        if ($tray->status_id != Configure::read('Validate')) {
+            $this->Flash->error(__('This tray cannot be validated.'));
+            return $this->redirect(['action' => 'index', 'filter' => 'validate']);
+        }
+        $count_books = $this->Trays->Books->find('all', ['limit' => 200])
+                ->where(['tray_id' => $id])->count();
         if ($this->request->is(['patch', 'post', 'put'])) {
-            if (count($books->toArray()) != $this->request->getData('num_books')) {
+            if ($count_books != $this->request->getData('num_books')) {
                 $this->Trays->Books->deleteAll(['tray_id' => $tray->tray_id]);
-                $tray->status_id = 1;
+                $tray->status_id = Configure::read('Incompleted');
                 $tray->modified_user = $this->Auth->user('username');
                 if ($this->Trays->save($tray)) {
                     return $this->redirect(['controller' => 'books',
@@ -278,71 +277,80 @@ class TraysController extends AppController
             } else if ($tray->tray_barcode != $this->request->getData('tray_barcode')) {
                 $this->Flash->error(__("The tray barcode doesn't match."));
             } else {
-                return $this->redirect(['controller' => 'books',
+                return $this->redirect([
                             'action' => 'scanList',
-                            'tray_id' => $tray->tray_id,
-                            'id' => 1, //current amount
-                            'count' => $this->request->getData('num_books')]);
+                            $tray->tray_id]);
             }
         }
-        $amount = count($books->toArray());
+        $amount = $count_books;
         $this->set(compact('tray', 'amount'));
     }
 
     /**
-     * Export flat file
-     * setsebool httpd_can_network_connect=1
+     * Scan list method
+     *
+     * @param string $id Tray id
+     */
+    public function scanList($id)
+    {
+        $tray = $this->Trays->get($id);
+        if ($tray->status_id != Configure::read('Validate')) {
+            $this->Flash->error(__('This tray cannot be validated.'));
+            return $this->redirect(['action' => 'index', 'filter' => 'validate']);
+        }
+        $bookList = $this->Trays->Books->find('all', ['limit' => 200])
+                                        ->where(['tray_id' => $id]);
+        $this->set(compact('tray', 'bookList'));
+    }
+    
+    /**
+     * Export flat file for all completed tray
      * format:  Tray address, space, short date, tab, item barcode, tab, long date, tab, constant “pittlcsu”
      * @example: R16-M13-S03-T01 03/04/19   31735064253499	2019/03/04 09:01:42	pittlcsu 
      * @see https://book.cakephp.org/3.0/en/controllers/request-response.html#sending-a-string-as-file
-     * @param string|null $id tray id.
      */
-    public function export($id = null)
+    public function export()
     {
-        $tray = $this->Trays->get($id, [
-            'contain' => []
-        ]);
-        $books = $this->Trays->Books->find('all')->where(['tray_id' => $tray->tray_id]);
-        
-        $content = '';
-        foreach ($books as $book) {
-            $content .= $tray->tray_barcode.' '.date('m/d/y')."\t".$book->book_barcode."\t".date('Y/m/d H:i:s')."\t".'pittlcsu'."\r\n";
+        $trays = $this->Trays->find('all')->contain(['Books'])->where(['Trays.status_id' => Configure::read('Completed')]);
+        $this->Flash->success(json_encode($trays));
+        if ($trays) {
+            $content = '';
+            foreach ($trays as $tray) {
+                foreach ($tray->books as $book) {
+                    $content .= $tray->tray_barcode.' '.date('m/d/Y', strtotime($tray->created))."\t".$book->book_barcode."\t".date('Y/m/d H:i:s', strtotime($tray->created))."\t".'pittlcsu'."\r\n";
+                }
+                if ($tray->status_id == Configure::read('Completed')) {
+                    $tray->status_id = Configure::read('Exported');
+                    $this->Trays->save($tray);
+                }
+            }
         }
         $response = $this->response;
         // Inject string content into response body (3.4.0+)
         $response = $response->withStringBody($content);
         $response = $response->withType('txt');
-        $response = $response->withDownload($tray->tray_barcode.'_'.date('Y-m-d').'.txt');
-        // Update tray status
-        if ($tray->status_id == 3) {
-            $tray->status_id = 4;
-            $this->Trays->save($tray);
-        }
-        // Refresh the page
-        $response = $response->withLocation(Router::url(['controller' => 'shelves', 'action' => 'view', $tray->shelf_id]));
+        $response = $response->withDownload(date('Y-m-d').'.txt');
         return $response;
     }
     
     /**
      * Print Single tray Label
-     * 
+     * setsebool httpd_can_network_connect=1
      * @param string|null $id tray id.
-     *      */
+     */
     public function printLabel($id = null) 
     {
-        $tray = $this->Trays->get($id, [
-            'contain' => []
-        ]);
-
-        $lpr = new PhpNetworkLprPrinter();
-        if ($lpr) {
-            $result = $lpr->printTrayLabel($tray->tray_barcode);
-            if ($result) {
-                $this->Flash->error(__($result));
+        if ($id) {
+            $tray = $this->Trays->get($id);
+            $lpr = new PhpNetworkLprPrinter(Configure::read('HOST'), Configure::read('PORT'));
+            if ($lpr) {
+                $lpr->printTrayLabel($tray->tray_barcode);
             } else {
-                $this->Flash->success(__("Label: ".$tray->tray_barcode));
+                $this->Flash->error(__("Cannot connect to printer."));
             }
+            return $this->redirect(['controller' => 'Trays', 'action' => 'view', $tray->tray_id]);
         }
-        return $this->redirect(['controller' => 'Trays', 'action' => 'view', $tray->tray_id]);
+        $this->Flash->error(__('The tray id is missing.'));
+        return $this->redirect($this->referer());
     }
 }

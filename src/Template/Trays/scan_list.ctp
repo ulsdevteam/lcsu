@@ -24,6 +24,7 @@
         </tbody>
     </table>
 </div>
+
 <script type="text/javascript">
     new Vue({
         el: '#app',
@@ -33,18 +34,6 @@
             count:0
         },
         methods: {
-            fetchBookList: function() {
-                axios
-                  .get('<?=  $this->Url->build(["controller" => "books",
-                                                "action" => "bookList",
-                                                "tray_id" => $this->request->getQuery('tray_id')
-                                                 ]); ?>')
-                  .then((response)=>{
-                      for (var i = 0; i < response['data'].length; i++) {
-                          this.bookList.push({'book_barcode': response['data'][i]['book_barcode'], 'status': 'Uncheck'});
-                      }
-                  })
-            },
             checkBook() {
                 if (!isNaN(this.input) && this.input.length == 14) {
                     var flag = false;
@@ -53,17 +42,15 @@
                             if(this.bookList[i]['status'] == 'Uncheck') {
                                 this.count++;
                                 if (this.count == this.bookList.length) {
-                                    //window.location = "<?= $this->Url->build(array('controller' => 'trays', 'action' => 'scan_end', $this->request->getQuery('tray_id'),'source' => 'validate','count' => $this->request->getQuery('count'))); ?>";
                                     window.location = "<?= $this->Url->build([
                                                             'controller' => 'trays',
                                                             'action' => 'scan_end',
-                                                            $this->request->getQuery('tray_id'),
+                                                            $tray->tray_id,
                                                             '?' => [
                                                                 'source' => 'validate',
-                                                                'count' => $this->request->getQuery('count')
+                                                                'count' => count($bookList->toArray())
                                                             ]
                                                         ], ['escape' => false])?>";
-                                    
                                 }
                             }
                             this.bookList[i]['status'] = 'Check';
@@ -79,11 +66,12 @@
                 this.input = "";
             }
         },
-        beforeMount () {
-            this.fetchBookList()
-        },
         mounted() {
             this.$refs.input_barcode.focus();
+            $data = <?php echo json_encode($bookList);?>;
+            for (var i = 0; i <$data.length; i++) {
+                this.bookList.push({'book_barcode': $data[i]['book_barcode'], 'status': 'Uncheck'});
+            }
         }
     })
 </script>

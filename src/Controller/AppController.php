@@ -21,6 +21,7 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Cache\Cache;
 use App\Auth\EnvAuthenticate;
+use Cake\Core\Configure;
 
 /**
  * Application Controller
@@ -73,8 +74,9 @@ class AppController extends Controller
      */
     public function beforeRender(Event $event)
     {
-        if ($this->Auth->user())
+        if ($this->Auth->user()) {
             $this->set('cur_user', $this->Auth->user());
+        }
     }
     
     public function isAuthorized($user) 
@@ -84,9 +86,9 @@ class AppController extends Controller
         $user = $this->Auth->user();
         $currentAction = $this->request->getParam('action');
         switch ($user['permission_id']) {
-            case 1:
+            case Configure::read('Managers'):
                 break;
-            case 2:
+            case Configure::read('Scanners'):
                 if ($currentAction === 'add' || $currentAction === 'edit' || $currentAction === 'delete') {
                     $this->actionNotAllow();
                 }

@@ -3,6 +3,8 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use App\Utility\PhpNetworkLprPrinter;
+use Cake\Core\Configure;
+
 /**
  * Shelves Controller
  *
@@ -35,14 +37,10 @@ class ShelvesController extends AppController
      */
     public function view($id = null)
     {
-        $shelf = $this->Shelves->get($id, [
-            'contain' => []
-        ]);
-        $module = $this->Shelves->Modules->get($shelf->module_id, [
-            'contain' => []
-        ]);
+        $shelf = $this->Shelves->get($id);
+        $module = $this->Shelves->Modules->get($shelf->module_id);
         $trays = $this->paginate($this->Shelves->Trays->find('all', ['order' => ['tray_title' => 'ASC']])->where(['shelf_id' => $id])->contain(['Status']));
-        $traysize = $this->Shelves->Traysizes->find()->where(['traysize_id' => $shelf->traysize_id])->first();
+        $traysize = $this->Shelves->Traysizes->get($shelf->traysize_id);
         $this->set(compact('shelf', 'module', 'trays', 'traysize'));
     }
 
@@ -93,9 +91,7 @@ class ShelvesController extends AppController
      */
     public function edit($id = null)
     {
-        $shelf = $this->Shelves->get($id, [
-            'contain' => []
-        ]);
+        $shelf = $this->Shelves->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $shelf = $this->Shelves->patchEntity($shelf, $this->request->getData());
             if ($this->Shelves->save($shelf)) {
@@ -143,21 +139,18 @@ class ShelvesController extends AppController
      *      */
     public function printLabel($id = null) 
     {
-        $shelf = $this->Shelves->get($id, [
-            'contain' => []
-        ]);
-
-        $lpr = new PhpNetworkLprPrinter();
-
-        if ($lpr) {
-            $result = $lpr->printShelfLabel($shelf->shelf_barcode);
-            if ($result) {
-                $this->Flash->error(__($result));
+        if ($id) {
+            $shelf = $this->Shelves->get($id);
+            $lpr = new PhpNetworkLprPrinter(Configure::read('HOST'), Configure::read('PORT'));
+            if ($lpr) {
+                $lpr->printShelfLabel($shelf->shelf_barcode);
             } else {
-                $this->Flash->success(__("Label: ".$shelf->shelf_barcode)); 
+                $this->Flash->error(__("Cannot connect to printer."));
             }
+            return $this->redirect(['action' => 'view', $shelf->shelf_id]);
         }
-        return $this->redirect(['action' => 'view', $shelf->shelf_id]);
+        $this->Flash->error('The shelf id is missing');
+        return $this->redirect($this->referer());
     }
     
     /**
@@ -167,24 +160,21 @@ class ShelvesController extends AppController
      *      */
     public function printLabels($id = null) 
     {
-        $shelf = $this->Shelves->get($id, [
-            'contain' => []
-        ]);
-        $trays = $this->Shelves->Trays->find('all', ['order' => ['tray_title' => 'DESC']])->where(['shelf_id' => $id]);
-
-        $lpr = new PhpNetworkLprPrinter();
-        
-        if ($lpr) {
-            foreach ($trays as $tray) {
-                $result = $lpr->printTrayLabel($tray->tray_barcode);
-                if ($result) {
-                    $this->Flash->error(__($result));
-                } else {
-                    $this->Flash->success(__("Label: ".$tray->tray_barcode));
+        if ($id) {
+            $shelf = $this->Shelves->get($id);
+            $trays = $this->Shelves->Trays->find('all', ['order' => ['tray_title' => 'DESC']])->where(['shelf_id' => $id]);
+            $lpr = new PhpNetworkLprPrinter(Configure::read('HOST'), Configure::read('PORT'));
+            if ($lpr) {
+                foreach ($trays as $tray) {
+                    $lpr->printTrayLabel($tray->tray_barcode);
                 }
+            } else {
+                $this->Flash->error(__("Cannot connect to printer."));
             }
+            return $this->redirect(['action' => 'view', $shelf->shelf_id]);
         }
-        return $this->redirect(['action' => 'view', $shelf->shelf_id]);
+        $this->Flash->error(__('The shelf id is missing.'));
+        return $this->redirect($this->referer());
     }
     
     /**
@@ -198,11 +188,12 @@ class ShelvesController extends AppController
         $traysizes = $this->Shelves->Traysizes->find('list',
                                                     ['keyField' => 'traysize_id','valueField' => 'traysize_option',
                                                     'limit' => 200]);
-        if ($this->request->is('post')) {
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            // Redirect to the same page but different traysize.
             return $this->redirect(['action' => 'findAvailable', 'traysizes' => $this->request->getData('traysizes')]);
         } else {
             if ($this->request->getQuery('traysizes')) {
-                $traysize = $this->Shelves->Traysizes->find('all')->where(['traysize_id' => $this->request->getQuery('traysizes')])->first();
+                $traysize = $this->Shelves->Traysizes->get( $this->request->getQuery('traysizes'));
             } else {
                 $traysize = $this->Shelves->Traysizes->find('all')->first();
             }
@@ -212,21 +203,20 @@ class ShelvesController extends AppController
     }
     
     /**
-     * AssignTraysize method
-     * Assign traysize and create new trays by num_trays 
+     * Allocate method
+     * Assign traysize and create new trays by traysizes.num_trays for a shelf
      *
-     * @param string|null $id $traysize id.
+     * @param string|null $id $shelf id.
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function allocate($id = null) 
     {
-        $shelf = $this->Shelves->get($id, [
-            'contain' => []
-        ]);
+        $shelf = $this->Shelves->get($id);
+        $check_amount = $this->Shelves->Trays->find('all')->where(['shelf_id' => $id])->count();
         // Update traysize, create equal amount of trays, and redirect to view page
-        if ($this->request->getQuery('traysize_id')) {
-            $traysize = $this->Shelves->Traysizes->find('all')->where(['traysize_id' => $this->request->getQuery('traysize_id')])->first();
+        if ($this->request->getQuery('traysize_id') && $check_amount == 0) {
+            $traysize = $this->Shelves->Traysizes->get( $this->request->getQuery('traysizes'));
             // Update traysize
             $shelf->traysize_id = $traysize->traysize_id;
             $shelf->tray_category = $traysize->tray_category;

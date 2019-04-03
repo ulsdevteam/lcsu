@@ -38,12 +38,18 @@ class SearchesController  extends AppController
                     return $exp->like('book_barcode', '%'.$keyword.'%');
                 });
         } else {
-            $results = TableRegistry::get('Trays')->find()
-                ->where(function ($exp, $q) use ($keyword) {
-                    return $exp->like('tray_barcode', '%'.$keyword.'%');
-                });
+            if (strpos($keyword, 'T')) {
+                $results = TableRegistry::get('Trays')->find()
+                    ->where(function ($exp, $q) use ($keyword) {
+                        return $exp->like('tray_barcode', '%'.$keyword.'%');
+                    });
+            } else {
+                $results = TableRegistry::get('Shelves')->find()
+                    ->where(function ($exp, $q) use ($keyword) {
+                        return $exp->like('shelf_barcode', '%'.$keyword.'%');
+                    });
+            }
         }
-
         $results = $this->paginate($results);
         $this->set(compact('results', 'keyword'));
     }

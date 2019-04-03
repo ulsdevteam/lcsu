@@ -14,27 +14,6 @@ use Cake\Event\Event;
  */
 class RangesController extends AppController 
 {
-
-    public function isAuthorized($user) 
-    {
-        return parent::isAuthorized($user);
-//        $user = $this->Auth->user();
-//        $currentAction = $this->request->getParam('action');
-//        switch ($user['permission_id']) {
-//            case 1:
-//                break;
-//            case 2:
-//                if ($currentAction === 'add' || $currentAction === 'edit' || $currentAction === 'delete') {
-//                    $this->actionNotAllow();
-//                }
-//                break;
-//            default:
-//                $this->blockInvalidUser();
-//                break;
-//        }
-//        return true;
-    }
-
     /**
      * Index method
      *
@@ -56,9 +35,7 @@ class RangesController extends AppController
      */
     public function view($id = null) 
     {
-        $range = $this->Ranges->get($id, [
-            'contain' => []
-        ]);
+        $range = $this->Ranges->get($id);
         $modules = $this->Ranges->Modules->find('all')->where(['range_id' => $id]);
         $modules = $this->paginate($modules);
         $this->set(compact('range', $range, 'modules'));
@@ -93,9 +70,7 @@ class RangesController extends AppController
      */
     public function edit($id = null) 
     {
-        $range = $this->Ranges->get($id, [
-            'contain' => []
-        ]);
+        $range = $this->Ranges->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $range = $this->Ranges->patchEntity($range, $this->request->getData());
             if ($this->Ranges->save($range)) {
