@@ -11,7 +11,6 @@
         <?php
             echo $this->Form->control('username');
             echo $this->Form->control('permission_id', ['options' => $permissions]);
-            echo $this->Form->control('create_time');
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

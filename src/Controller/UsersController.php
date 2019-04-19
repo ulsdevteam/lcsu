@@ -89,7 +89,7 @@ class UsersController extends AppController
             }
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
-        $permissions = $this->Users->Permissions->find('list', ['limit' => 200]);
+        $permissions = $this->Users->Permissions->find('list', ['keyField' => 'permission_id','valueField' => 'permission_title']);
         $this->set(compact('user', 'permissions'));
     }
 
