@@ -100,6 +100,16 @@ class AppController extends Controller
         
         return true;
     }
+
+    public function bootstrap()
+    {
+        parent::bootstrap();
+        // Load the contact manager plugin by class name
+        $this->addPlugin(ContactManagerPlugin::class);
+
+        // Load a plugin with a vendor namespace by 'short name'
+        $this->addPlugin('CakeDC/OracleDriver', ['bootstrap' => true]);
+    }
     
     public function blockInvalidUser() 
     {

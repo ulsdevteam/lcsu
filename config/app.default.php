@@ -290,6 +290,23 @@ return [
         ],
 
         /**
+         * Using "bin/cake bake model class_name --table table_name -c voyager" to switch connection
+         */
+        'voyager' => [
+            'className' => 'CakeDC\OracleDriver\Database\OracleConnection',
+            'driver' => 'CakeDC\OracleDriver\Database\Driver\OracleOCI', # For OCI8
+            'host' => 'voyager_host',          # Database host name or IP address
+            'port' => '1521', # Database port number (default: 1521)
+            'username' => 'voyager_user',          # Database username
+            'password' => 'voyager_password',       # Database password
+            'sid' => 'voyager_sid',                    # Database System ID (maps to Oracle's `SID`)
+            'instance' => '',               # Database instance name (maps to Oracle's `INSTANCE_NAME`)
+            'pooled' => '',                 # Database pooling (maps to Oracle's `SERVER=POOLED`)
+            'schema' => 'voyager_schema',
+            'quoteIdentifiers' => false,
+            'connect' => 'oci_connect',
+        ],
+        /**
          * The test connection is used during the test suite.
          */
         'test' => [
@@ -383,21 +400,21 @@ return [
     'Session' => [
         'defaults' => 'php',
     ],
-    
+
     // Define user permission
     'Managers' => 0,
     'Scanners' => 0,
-    
+
     // Define tray statys
     'Incompleted' => 0,
     'Validate'    => 0,
     'Completed'   => 0,
     'Exported'    => 0,
-    
+
     // printer configuration
     'HOST' => "**",
     'PORT' => null,
-    
+
     // Current user
     'Env_user' => env('*', true),
 ];
