@@ -130,7 +130,7 @@ class FileLoaderCommand extends Command
             }
         }
 
-        $io->out("The process is done! Process ".$count." data into sql/".$sql_filename."Execute:\n mysql -u admin -p -f shelf_db < ".$sql_filename." > logs/sql-error.txt");
+        $io->out("The process is done! Process ".$count." data into tmp/".$sql_filename."Execute:\n mysql -u admin -p -f shelf_db < ".$sql_filename." > sql-error.txt");
         $time = (microtime(true) - $time_start)/60;
         $io->out("The process took ".round($time, 2). "minutes");
         if ($this->error_log) {

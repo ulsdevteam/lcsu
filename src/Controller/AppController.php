@@ -22,6 +22,8 @@ use Cake\ORM\TableRegistry;
 use Cake\Cache\Cache;
 use App\Auth\EnvAuthenticate;
 use Cake\Core\Configure;
+use Cake\Http\BaseApplication;
+use ContactManager\Plugin as ContactManagerPlugin;
 
 /**
  * Application Controller
@@ -68,6 +70,16 @@ class AppController extends Controller
         ]);
     }
 
+    public function bootstrap()
+    {
+        parent::bootstrap();
+        // Load the contact manager plugin by class name
+        $this->addPlugin(ContactManagerPlugin::class);
+
+        // Load a plugin with a vendor namespace by 'short name'
+        $this->addPlugin('CakeDC/OracleDriver', ['bootstrap' => true]);
+    }
+    
     /**
      * Block error messages from PHP error messages, show $user issue 
      * Comment beforeRender function to check PHP error messages
