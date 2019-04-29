@@ -34,22 +34,13 @@ class LocationTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('LOCATION');
-
-        $this->belongsToMany('LEDGER', [
-            'foreignKey' => 'l_o_c_a_t_i_o_n_id',
-            'targetForeignKey' => 'l_e_d_g_e_r_id',
-            'joinTable' => 'LEDGER_LOCATIONS'
-        ]);
-        $this->belongsToMany('REQUESTGROUP', [
-            'foreignKey' => 'l_o_c_a_t_i_o_n_id',
-            'targetForeignKey' => 'r_e_q_u_e_s_t_g_r_o_u_p_id',
-            'joinTable' => 'REQUEST_GROUP_LOCATION'
-        ]);
-        $this->belongsToMany('SORTGROUP', [
-            'foreignKey' => 'l_o_c_a_t_i_o_n_id',
-            'targetForeignKey' => 's_o_r_t_g_r_o_u_p_id',
-            'joinTable' => 'SORT_GROUP_LOCATION'
+        $this->setTable('LOCATION'); //LOCATION_ID
+        $this->setAlias('L');
+        $this->setPrimaryKey('LOCATION_ID');
+        
+        $this->hasMany('Item', [
+            'foreignKey' => 'LOCATION_ID',
+            'joinType' => 'INNER'
         ]);
     }
 

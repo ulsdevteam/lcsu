@@ -31,6 +31,13 @@ class ItemBarcodeTable extends Table
         parent::initialize($config);
 
         $this->setTable('ITEM_BARCODE');
+        $this->setAlias('IB');
+        
+        $this->belongsTo('Item', [
+            'foreignKey' => 'ITEM_ID',
+            'joinType' => 'INNER',
+            'joinTable' => 'ITEM'
+        ]);
     }
 
     /**
@@ -44,6 +51,7 @@ class ItemBarcodeTable extends Table
         $validator
             ->integer('ITEM_ID')
             ->allowEmptyString('ITEM_ID');
+            
 
         $validator
             ->scalar('ITEM_BARCODE')
@@ -70,4 +78,5 @@ class ItemBarcodeTable extends Table
     {
         return 'voyager';
     }
+    
 }

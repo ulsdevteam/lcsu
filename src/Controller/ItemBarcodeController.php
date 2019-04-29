@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-
+use Cake\Datasource\ConnectionManager;
 /**
  * ItemBarcode Controller
  *
@@ -20,7 +20,18 @@ class ItemBarcodeController extends AppController
     public function index()
     {
         $itemBarcode = $this->paginate($this->ItemBarcode);
-
+        $connection = ConnectionManager::get('voyager'); 
+//        $results=$connection->execute("SELECT * FROM ITEM_BARCODE WHERE ITEM_BARCODE = '31735013490895'")->fetchAll('assoc'); 
+//        
+//        echo json_encode($results);
+        
+        $test = $this->ItemBarcode->find('all')->where(['ITEM_BARCODE' => 31735013490895])->contain(['Item'])->first();
+        $results=$connection->execute("SELECT * FROM LOCATION WHERE LOCATION_ID = ".$test['item']['PERM_LOCATION'])->fetchAll('assoc'); 
+//        $location = $this->ItemBarcode->Item->find('all')->where(['LOCATION_ID' => $test['item']['PERM_LOCATION']])->contain(['Location']);
+//        $location = $this->ItemBarcode->Item->where(['LOCATION_ID' => $test['item']['PERM_LOCATION']])->contain(['Location']);
+        echo json_encode($test['item']['PERM_LOCATION']);
+        echo json_encode($results[0]['LOCATION_CODE']);
+        
         $this->set(compact('itemBarcode'));
     }
 
@@ -33,74 +44,21 @@ class ItemBarcodeController extends AppController
      */
     public function view($id = null)
     {
-        $itemBarcode = $this->ItemBarcode->get($id, [
-            'contain' => []
-        ]);
+        $itemBarcode = $this->ItemBarcode->get($id);
 
         $this->set('itemBarcode', $itemBarcode);
-    }
-
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     */
-    public function add()
+    }    
+    
+    
+    public function search($item_barcode)
     {
-        $itemBarcode = $this->ItemBarcode->newEntity();
-        if ($this->request->is('post')) {
-            $itemBarcode = $this->ItemBarcode->patchEntity($itemBarcode, $this->request->getData());
-            if ($this->ItemBarcode->save($itemBarcode)) {
-                $this->Flash->success(__('The item barcode has been saved.'));
+        $connection = ConnectionManager::get('voyager');   
+        $itembarcode = $this->ItemBarcode->find('all')->where(['ITEM_BARCODE' => $item_barcode, 'BARCODE_STATUS' => 1])->contain(['Item'])->first();
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The item barcode could not be saved. Please, try again.'));
+        $results=$connection->execute("SELECT * FROM LOCATION WHERE LOCATION_ID = ".$itembarcode['item']['PERM_LOCATION'])->fetchAll('assoc');
+        if ($results[0]['LOCATION_CODE'] != 'tb') {
+            $this->Flash->error("'".$item_barcode."' is not in Thomas Boulevard LCSU.");
         }
-        $this->set(compact('itemBarcode'));
     }
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Item Barcode id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $itemBarcode = $this->ItemBarcode->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $itemBarcode = $this->ItemBarcode->patchEntity($itemBarcode, $this->request->getData());
-            if ($this->ItemBarcode->save($itemBarcode)) {
-                $this->Flash->success(__('The item barcode has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The item barcode could not be saved. Please, try again.'));
-        }
-        $this->set(compact('itemBarcode'));
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Item Barcode id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $itemBarcode = $this->ItemBarcode->get($id);
-        if ($this->ItemBarcode->delete($itemBarcode)) {
-            $this->Flash->success(__('The item barcode has been deleted.'));
-        } else {
-            $this->Flash->error(__('The item barcode could not be deleted. Please, try again.'));
-        }
-
-        return $this->redirect(['action' => 'index']);
-    }
+    
 }

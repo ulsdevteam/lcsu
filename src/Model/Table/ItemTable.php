@@ -38,8 +38,21 @@ class ItemTable extends Table
         parent::initialize($config);
 
         $this->setTable('ITEM');
+        $this->setAlias('I');
+        $this->setPrimaryKey('ITEM_ID');
 
-        $this->belongsToMany('HOLDRECALL', [
+        $this->belongsTo('Location', [
+            'foreignKey' => 'PERM_LOCATION',
+            'joinType' => 'INNER',
+            'joinTable' => 'ITEM_BARCODE'
+        ]);
+        
+        $this->hasOne('ITEM_BARCODE', [
+            'foreignKey' => 'ITEM_ID',
+            'joinType' => 'INNER',
+            'joinTable' => 'ITEM_BARCODE'
+        ]);
+        /*$this->belongsToMany('HOLDRECALL', [
             'foreignKey' => 'i_t_e_m_id',
             'targetForeignKey' => 'h_o_l_d_r_e_c_a_l_l_id',
             'joinTable' => 'HOLD_RECALL_ITEMS'
@@ -68,7 +81,7 @@ class ItemTable extends Table
             'foreignKey' => 'i_t_e_m_id',
             'targetForeignKey' => 'r_e_s_e_r_v_e_l_i_s_t_id',
             'joinTable' => 'RESERVE_LIST_ITEMS'
-        ]);
+        ]);*/
     }
 
     /**

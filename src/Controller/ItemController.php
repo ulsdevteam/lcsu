@@ -39,80 +39,23 @@ class ItemController extends AppController
 
         $this->set('item', $item);
     }
-
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     */
-    public function add()
+    
+    public function search($item_barcode)
     {
-        $item = $this->Item->newEntity();
-        if ($this->request->is('post')) {
-            $item = $this->Item->patchEntity($item, $this->request->getData());
-            if ($this->Item->save($item)) {
-                $this->Flash->success(__('The item has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The item could not be saved. Please, try again.'));
-        }
-        $hOLDRECALL = $this->Item->HOLDRECALL->find('list', ['limit' => 200]);
-        $nOTETYPE = $this->Item->NOTETYPE->find('list', ['limit' => 200]);
-        $iTEMSTATUS = $this->Item->ITEMSTATUS->find('list', ['limit' => 200]);
-        $iTEMTYPE = $this->Item->ITEMTYPE->find('list', ['limit' => 200]);
-        $mEDIASCHEDULE = $this->Item->MEDIASCHEDULE->find('list', ['limit' => 200]);
-        $rESERVELIST = $this->Item->RESERVELIST->find('list', ['limit' => 200]);
-        $this->set(compact('item', 'hOLDRECALL', 'nOTETYPE', 'iTEMSTATUS', 'iTEMTYPE', 'mEDIASCHEDULE', 'rESERVELIST'));
+        $itemBarcode = $this->Item->find('all', [ 'joins' => [ ['table' => 'ITEM_BARCODE', 'alias' => 'IB', 'type' => 'INNER', 'conditions' => ['IB.ITEM_BARCODE = ITEM.ITEM_BARCODE']]], 
+                                                  'conditions' => ['IB.ITEM_BARCODE' => $item_barcode],
+                                                  'fields' => ['IB.ITEM_BARCODE']]);
+        
+        echo $itemBarcode;
+        return $itemBarcode;
     }
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Item id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function edit($id = null)
+    
+    public function search2($item_barcode)
     {
-        $item = $this->Item->get($id, [
-            'contain' => ['HOLDRECALL', 'NOTETYPE', 'ITEMSTATUS', 'ITEMTYPE', 'MEDIASCHEDULE', 'RESERVELIST']
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $item = $this->Item->patchEntity($item, $this->request->getData());
-            if ($this->Item->save($item)) {
-                $this->Flash->success(__('The item has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The item could not be saved. Please, try again.'));
-        }
-        $hOLDRECALL = $this->Item->HOLDRECALL->find('list', ['limit' => 200]);
-        $nOTETYPE = $this->Item->NOTETYPE->find('list', ['limit' => 200]);
-        $iTEMSTATUS = $this->Item->ITEMSTATUS->find('list', ['limit' => 200]);
-        $iTEMTYPE = $this->Item->ITEMTYPE->find('list', ['limit' => 200]);
-        $mEDIASCHEDULE = $this->Item->MEDIASCHEDULE->find('list', ['limit' => 200]);
-        $rESERVELIST = $this->Item->RESERVELIST->find('list', ['limit' => 200]);
-        $this->set(compact('item', 'hOLDRECALL', 'nOTETYPE', 'iTEMSTATUS', 'iTEMTYPE', 'mEDIASCHEDULE', 'rESERVELIST'));
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Item id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $item = $this->Item->get($id);
-        if ($this->Item->delete($item)) {
-            $this->Flash->success(__('The item has been deleted.'));
-        } else {
-            $this->Flash->error(__('The item could not be deleted. Please, try again.'));
-        }
-
-        return $this->redirect(['action' => 'index']);
+        $connection = ConnectionManager::get('voyager'); 
+        $results=$connection->execute("SELECT * FROM ITEMBARCODE WHERE ITEM_BARCODE = '31735013490895'")->fetchAll('assoc'); 
+        
+        echo json_encode($results);
+        return $results;
     }
 }
