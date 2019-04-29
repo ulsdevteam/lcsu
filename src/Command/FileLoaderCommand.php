@@ -27,7 +27,7 @@ class FileLoaderCommand extends Command
         $this->loadModel('Modules');
         $this->loadModel('Shelves');
         $this->loadModel('Traysizes');
-        $this->error_log_filename = "errors/error_log-".date('Y-m-d_H-i-s').".txt";
+        $this->error_log_filename = "logs/error_log-".date('Y-m-d_H-i-s').".txt";
         echo "initialize\n";
     }
 
@@ -48,9 +48,9 @@ class FileLoaderCommand extends Command
     }
 
     /**
-     * Load shelf data from a csv file 
+     * Load shelf data from a csv file
      * e.g. sudo su apache -s/bin/bash -c "bin/cake FileLoader -s sample_shelves.csv"
-     * 
+     *
      * @param $input string Filename, e.g. sample_shelves.csv
      * @param $io ConsoleIo
      */
@@ -100,14 +100,14 @@ class FileLoaderCommand extends Command
     /**
      * Load tray data from a csv file
      * e.g. sudo su apache -s/bin/bash -c "bin/cake FileLoader -t lcsu-barcodes.csv"
-     * 
+     *
      * @param $input string Filename
      * @param $io ConsoleIo
      */
     public function loadTrays($input, $io)
     {
         $trays = [];
-        $sql_filename = "sql/insert-".date('Y-m-d_H-i-s').".sql";
+        $sql_filename = "tmp/insert-".date('Y-m-d_H-i-s').".sql";
         $sql_file = fopen($sql_filename, "w");
 
         $time_start = microtime(true);
@@ -130,7 +130,7 @@ class FileLoaderCommand extends Command
             }
         }
 
-        $io->out("The process is done! Process ".$count." data into sql/".$sql_filename."Execute:\n mysql -u admin -p -f shelf_db < ".$sql_filename." > sql-error.txt");
+        $io->out("The process is done! Process ".$count." data into tmp/".$sql_filename."Execute:\n mysql -u admin -p -f shelf_db < ".$sql_filename." > sql-error.txt");
         $time = (microtime(true) - $time_start)/60;
         $io->out("The process took ".round($time, 2). "minutes");
         if ($this->error_log) {
@@ -143,10 +143,10 @@ class FileLoaderCommand extends Command
 
     /**
      * Create Range method
-     * 
+     *
      * @param $range_title string range title
      * @param $ranges Array contains range entities
-     * 
+     *
      * @return $id integer Range id
      */
     public function createRange($range_title, &$ranges)
@@ -159,11 +159,11 @@ class FileLoaderCommand extends Command
 
     /**
      * Create Module method
-     * 
-     * @param $segs Array barcode splits by ',', e.g. ["R05", "M15", "S23", "T09"] 
+     *
+     * @param $segs Array barcode splits by ',', e.g. ["R05", "M15", "S23", "T09"]
      * @param $range_id string Range id
      * @param $modules Array contains module entities
-     * 
+     *
      * @return integer Module id
      */
     public function createModule($segs, $range_id, &$modules)
@@ -176,10 +176,10 @@ class FileLoaderCommand extends Command
 
     /**
      * Create Shelf method
-     * 
+     *
      * @param $count string error message
      * @param $row string error message
-     * @param $segs Array barcode splits by ',', e.g. ["R05", "M15", "S23", "T09"] 
+     * @param $segs Array barcode splits by ',', e.g. ["R05", "M15", "S23", "T09"]
      * @param $module_id string Module id
      * @param $traysize_id string Traysize id
      */
@@ -203,7 +203,7 @@ class FileLoaderCommand extends Command
 
     /**
      * Add error log method
-     * 
+     *
      * @param $msg string error message
      */
     protected function addErrorLog($msg)
@@ -216,9 +216,9 @@ class FileLoaderCommand extends Command
 
     /**
      * Build Option Parser method
-     * 
+     *
      * @param $parser ConsoleOptionParser
-     * 
+     *
      * @return $parser ConsoleOptionParser
      */
     protected function buildOptionParser(ConsoleOptionParser $parser)
