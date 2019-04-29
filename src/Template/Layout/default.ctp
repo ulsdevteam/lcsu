@@ -42,7 +42,7 @@ $cakeDescription = 'LCSU';
             <?= $this->Form->create(false, ['type' => 'GET', 'url' => ['controller' => 'searches', 'action' => 'index']]) ?>
                 <div class="input-group">
                     <?php
-                        echo $this->Form->control('keyword', ['label' => false, 'placeholder' => 'Seach']);
+                        echo $this->Form->control('keyword', ['label' => false, 'placeholder' => 'Search']);
                     ?>
                 </div>
             <?= $this->Form->end() ?>
