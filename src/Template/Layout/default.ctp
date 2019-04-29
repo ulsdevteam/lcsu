@@ -49,14 +49,16 @@ $cakeDescription = 'LCSU';
         </div>
 
     </nav>
-    <nav class="large-2 medium-3 columns" data-topbar role="navigation">
-        <?php
-            echo $this->element('navigation');
-        ?>
-    </nav>
     <?= $this->Flash->render() ?>
     <div class="container clearfix">
-        <?= $this->fetch('content') ?>
+        <nav class="large-2 medium-2 columns" data-topbar role="navigation">
+            <?php
+                echo $this->element('navigation');
+            ?>
+        </nav>
+        <div class="large-10 medium-10 columns">
+            <?= $this->fetch('content') ?>
+        </div>
     </div>
     <footer>
     </footer>
