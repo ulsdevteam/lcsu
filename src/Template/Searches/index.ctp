@@ -7,8 +7,6 @@ use Cake\Core\Configure;
 ?>
 <div class="searches index content">
     <h3 class="page-title"><?= __('Search for ') ?><span><?= "\"".$keyword."\""?></span></h3>
-    <div class="index-table">
-
         <table cellpadding="0" cellspacing="0">
             <thead>
                 <tr>
@@ -73,7 +71,6 @@ use Cake\Core\Configure;
                 <?php endforeach; ?>
             </tbody>
         </table>
-    </div>
     <div class="paginator">
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('first')) ?>

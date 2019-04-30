@@ -42,21 +42,23 @@ $cakeDescription = 'LCSU';
             <?= $this->Form->create(false, ['type' => 'GET', 'url' => ['controller' => 'searches', 'action' => 'index']]) ?>
                 <div class="input-group">
                     <?php
-                        echo $this->Form->control('keyword', ['label' => false, 'placeholder' => 'Seach']);
+                        echo $this->Form->control('keyword', ['label' => false, 'placeholder' => 'Search']);
                     ?>
                 </div>
             <?= $this->Form->end() ?>
         </div>
 
     </nav>
-    <nav class="large-2 medium-3 columns" data-topbar role="navigation">
-        <?php
-            echo $this->element('navigation');
-        ?>
-    </nav>
     <?= $this->Flash->render() ?>
     <div class="container clearfix">
-        <?= $this->fetch('content') ?>
+        <nav class="large-2 medium-2 columns" data-topbar role="navigation">
+            <?php
+                echo $this->element('navigation');
+            ?>
+        </nav>
+        <div class="large-10 medium-10 columns">
+            <?= $this->fetch('content') ?>
+        </div>
     </div>
     <footer>
     </footer>
