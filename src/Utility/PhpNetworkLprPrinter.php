@@ -193,7 +193,7 @@ class PhpNetworkLprPrinter{
                 $cfa  = "";
                 $cfa .= "H" . $hostname . "\n"; //hostname
                 $cfa .= "P" . $this->_username . "\n"; //user
-                $cfA .= "fdfA" + $jobid + $hostname + "\n";
+                $cfa .= "fdfA" + $jobid + $hostname + "\n";
                 //TODO: Add more parameters. See http://www.faqs.org/rfcs/rfc1179.html
 
                 return $cfa;
@@ -238,8 +238,8 @@ class PhpNetworkLprPrinter{
 
         /**
          * Print single shelf label
-         *        
-         * @access      public  
+         *
+         * @access      public
          * @param       string $label_text The shelf label content
          */
         public function printShelfLabel($label_text) {
@@ -255,8 +255,8 @@ class PhpNetworkLprPrinter{
 
         /**
          * Print single tray label
-         *        
-         * @access      public  
+         *
+         * @access      public
          * @param       string $label_text The tray label content
          */
         public function printTrayLabel($label_text) {
