@@ -22,9 +22,9 @@
     
     <div class="child-table">
         <h5 class="page-title">Located shelves</h5>
-        <?= $this->Html->link(__('Print'), ['action' => 'printLabels', $module->module_id], ['class'=>'func-btn tooltips', 'title' => 'Print all shelf labels in this module']);?>
+        <?= $this->Html->link(__('Print All Shelf Labels').'|', ['action' => 'printLabels', $module->module_id], ['class'=>'func-btn tooltips', 'title' => 'Print all shelf labels in this module']);?>
         <?php if ($perm == 1) {
-        echo $this->Html->link( __('Add Shelf'),
+        echo $this->Html->link('|'. __('Add Shelf').'|',
                             array('controller'=>'shelves', 'action' => 'add', 'module_id' => $module->module_id),
                             array(
                                 'bootstrap-type' => 'primary',
@@ -49,7 +49,7 @@
                         <span>|</span>
                         <?= $this->Html->link(__('View'), ['controller' => 'Shelves', 'action' => 'view', $shelf->shelf_id]) ?>
                         <span>|</span>
-                        <?= $this->Html->link(__('Print'), ['controller' => 'Shelves', 'action' => 'printLabel', $shelf->shelf_id]) ?>
+                        <?= $this->Html->link(__('Print Shelf Label'), ['controller' => 'Shelves', 'action' => 'printLabel', $shelf->shelf_id], ['title' => 'Print this shelf label']) ?>
                         <span>|</span>
                         <?php if($perm == 1) echo $this->Html->link(__('Edit'), ['controller' => 'Shelves', 'action' => 'edit', $shelf->shelf_id]) ?>
                         <span>|</span>
