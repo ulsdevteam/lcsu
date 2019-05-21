@@ -132,6 +132,7 @@ class ModulesController extends AppController
                 foreach ($shelves as $shelf) {
                     $lpr->printShelfLabel($shelf->shelf_barcode);
                 }            
+                $this->Flash->success(__('All labels are printed out successfully.'));
             } else {
                 $this->Flash->error(__("Cannot connect to printer."));
             }

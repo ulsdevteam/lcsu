@@ -146,6 +146,7 @@ class ShelvesController extends AppController
             $lpr = new PhpNetworkLprPrinter(Configure::read('HOST'), Configure::read('PORT'));
             if ($lpr) {
                 $lpr->printShelfLabel($shelf->shelf_barcode);
+                $this->Flash->success(__('The label is printed out successfully.'));
             } else {
                 $this->Flash->error(__("Cannot connect to printer."));
             }
@@ -170,6 +171,7 @@ class ShelvesController extends AppController
                 foreach ($trays as $tray) {
                     $lpr->printTrayLabel($tray->tray_barcode);
                 }
+                $this->Flash->success(__('All labels are printed out successfully.'));
             } else {
                 $this->Flash->error(__("Cannot connect to printer."));
             }
@@ -224,7 +226,7 @@ class ShelvesController extends AppController
                 $tray->created = date("Y-m-d H:i:s");
                 $tray->tray_title = 'T'.sprintf("%02d", $i);
                 $this->Shelves->Trays->save($tray);
-                $this->Flash->success(__('Created '.$traysize->num_trays.' trays successfully.'));
+                $this->Flash->success(__('Created # {0} trays successfully.', $traysize->num_trays));
             }
         } else {
             $this->Flash->error(__('Fail to allocate new trays.'));

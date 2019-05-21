@@ -209,10 +209,10 @@ class TraysController extends AppController
         if ($source) {
             switch ($source) {
                 case 'validate':
-                    $this->Flash->success(__('The tray(' . $tray->tray_barcode . ') has been validated.'));
+                    $this->Flash->success(__('The tray # {0} has been validated.', $tray->tray_barcode));
                     break;
                 case 'incomplete':
-                    $this->Flash->success(__('The tray(' . $tray->tray_barcode . ') has been completed.'));
+                    $this->Flash->success(__('The tray # {0} has been completed.', $tray->tray_barcode));
                     break;
             }
             return $this->redirect(['action' => 'index', 'filter' => $this->request->getQuery('source')]);
@@ -347,6 +347,7 @@ class TraysController extends AppController
             $lpr = new PhpNetworkLprPrinter(Configure::read('HOST'), Configure::read('PORT'));
             if ($lpr) {
                 $lpr->printTrayLabel($tray->tray_barcode);
+                $this->Flash->success(__('The label is printed out successfully.'));
             } else {
                 $this->Flash->error(__("Cannot connect to printer."));
             }
