@@ -395,7 +395,7 @@ return [
     'Exported'    => 4,
 
     // printer configuration
-    'HOST' => "sato1.library.pitt.edu",
+    'HOST' => "PRINTER_HOST",
     'PORT' => 515,
 
     // Current user
