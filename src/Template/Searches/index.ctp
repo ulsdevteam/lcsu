@@ -18,7 +18,7 @@ use Cake\Core\Configure;
                             echo "<th scope='col'>".$this->Paginator->sort('tray_barcode')."</th>";
                             echo "<th scope='col'>".$this->Paginator->sort('created')."</th>";
                             echo "<th scope='col'>".$this->Paginator->sort('modified')."</th>";
-                            echo "<th scope='col'>".$this->Paginator->sort('modified_user')."</th>";
+                            echo "<th scope='col'>".$this->Paginator->sort('modified_user', 'Modified By')."</th>";
                             echo "<th scope='col' class='actions'>".__('Actions')."</th>";
                         } else {
                             echo "<th scope='col'>".$this->Paginator->sort('shelf_barcode')."</th>";

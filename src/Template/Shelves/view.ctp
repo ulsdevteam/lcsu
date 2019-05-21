@@ -9,8 +9,8 @@ use Cake\Core\Configure;
 
     <?php 
         $perm = $cur_user['permission_id'];
-        echo $this->Html->link(__('Print'), ['action' => 'printLabel', $shelf->shelf_id], ['class'=>'func-btn tooltips', 'title' => 'Print this shelf barcode']); 
-        if ($perm == 1 )echo $this->Html->link(__('Edit'), ['action' => 'edit', $shelf->shelf_id], ['class'=>'func-btn']); 
+        echo $this->Html->link('|'.__('Print Shelf Label').'|', ['action' => 'printLabel', $shelf->shelf_id], ['class'=>'func-btn tooltips', 'title' => 'Print this shelf barcode']); 
+        if ($perm == 1 )echo $this->Html->link('|'.__('Edit'), ['action' => 'edit', $shelf->shelf_id], ['class'=>'func-btn']); 
     ?>
     <table class="vertical-table">
         <tr>
@@ -27,7 +27,7 @@ use Cake\Core\Configure;
         </tr>
     </table>
 
-    <?= $this->Html->link(__('Print'), ['action' => 'printLabels', $shelf->shelf_id], ['class'=>'func-btn tooltips', 'title' => 'Print all tray labels in this shelf']); ?>
+    <?= $this->Html->link(__('Print All Tray Label'), ['action' => 'printLabels', $shelf->shelf_id], ['class'=>'func-btn tooltips', 'title' => 'Print all tray labels in this shelf']); ?>
     <div class="index-table">
         <h5 class="page-title">Located trays</h5>
         <table cellpadding="0" cellspacing="0">
@@ -37,7 +37,7 @@ use Cake\Core\Configure;
                     <th scope="col"><?= $this->Paginator->sort('status') ?></th>
                     <th scope="col"><?= $this->Paginator->sort('created') ?></th>
                     <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
-                    <th scope="col"><?= $this->Paginator->sort('modified_user') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('modified_user', 'Modified By') ?></th>
                     <th scope="col" class="actions"><?= __('Actions') ?></th>
                 </tr>
             </thead>
@@ -52,9 +52,14 @@ use Cake\Core\Configure;
                     <td class="actions">
                         <span>|</span>
                         <?= $this->Html->link(__('View'), ['controller' => 'Trays', 'action' => 'view', $tray->tray_id]) ?>
-                        <span>|</span>
-                        <?php if ($tray->status_id >= Configure::read('Completed')) echo $this->Html->link(__('Export'), ['controller' => 'Trays','action' => 'export', $tray->tray_id] , ['target' => '_blank','v-on:click' => 'download('.$tray->tray_id.')']) ?>
-                        <span>|</span>
+                        <?php if ($tray->status_id >= Configure::read('Completed')) 
+                        {
+                            echo '<span>|</span>';
+                            echo $this->Html->link(__('Export'), ['controller' => 'Trays','action' => 'export', $tray->tray_id] , ['target' => '_blank','v-on:click' => 'download('.$tray->tray_id.')']);
+                            echo '<span>|</span>';
+                        }?>
+                        <?= $this->Html->link(__('Print Tray Label').'|', ['controller' => 'Trays', 'action' => 'printLabel', $tray->tray_id], ['class'=>'func-btn tooltips', 'title' => 'Print this tray barcode']); ?>
+                        
                         <?php //if ($perm == 1) echo $this->Form->postLink(__('Delete'), ['controller' => 'Trays','action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]) ?>
                     </td>
                 </tr>
