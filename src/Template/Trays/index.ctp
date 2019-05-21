@@ -15,7 +15,7 @@
                     <th scope="col"><?= $this->Paginator->sort('status_id') ?></th>
                     <th scope="col"><?= $this->Paginator->sort('created') ?></th>
                     <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
-                    <th scope="col"><?= $this->Paginator->sort('modified_user') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('modified_user', 'Modified By') ?></th>
                     <th scope="col" class="actions"><?= __('Actions') ?></th>
                 </tr>
             </thead>
