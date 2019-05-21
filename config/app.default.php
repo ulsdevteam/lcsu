@@ -385,19 +385,19 @@ return [
     ],
     
     // Define user permission
-    'Managers' => 0,
-    'Scanners' => 0,
-    
+    'Managers' => 1,
+    'Scanners' => 2,
+
     // Define tray statys
-    'Incompleted' => 0,
-    'Validate'    => 0,
-    'Completed'   => 0,
-    'Exported'    => 0,
-    
+    'Incompleted' => 1,
+    'Validate'    => 2,
+    'Completed'   => 3,
+    'Exported'    => 4,
+
     // printer configuration
-    'HOST' => "**",
-    'PORT' => null,
-    
+    'HOST' => "sato1.library.pitt.edu",
+    'PORT' => 515,
+
     // Current user
-    'Env_user' => env('*', true),
+    'Env_user' => env('REMOTE_USER', true),
 ];
