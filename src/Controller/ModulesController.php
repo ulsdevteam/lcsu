@@ -130,7 +130,11 @@ class ModulesController extends AppController
 
             if ($lpr) {
                 foreach ($shelves as $shelf) {
-                    $lpr->printShelfLabel($shelf->shelf_barcode);
+                    $errMsg = $lpr->printShelfLabel($shelf->shelf_barcode);
+                    if ($errMsg) {
+                        $thie->Flash->error($errMsg);
+                        return $this->redirect(['action' => 'view', $module->module_id]);
+                    }
                 }            
                 $this->Flash->success(__('All labels are printed out successfully.'));
             } else {
