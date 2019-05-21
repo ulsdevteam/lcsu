@@ -27,8 +27,11 @@
             <tr>
                 <td><?= h($shelf->shelf_barcode) ?></td>
                 <td class="actions">
+                    <span>|</span>
                     <?= $this->Html->link(__('View'), ['action' => 'view', $shelf->shelf_id]) ?>
+                    <span>|</span>
                     <?= $this->Html->link(__('Allocate trays'), ['action' => 'allocate', $shelf->shelf_id, 'traysize_id' => $traysize->traysize_id]) ?>
+                    <span>|</span>
                 </td>
             </tr>
             <?php endforeach; ?>

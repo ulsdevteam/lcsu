@@ -27,9 +27,13 @@
                 <td><?= h($user->username) ?></td>
                 <td><?= $user->has('permission') ? $this->Html->link($user->permission->permission_title, ['controller' => 'Permissions', 'action' => 'view', $user->permission->permission_id]) : '' ?></td>
                 <td class="actions">
+                    <span>|</span>
                     <?= $this->Html->link(__('View'), ['action' => 'view', $user->user_id]) ?>
+                    <span>|</span>
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->user_id]) ?>
+                    <span>|</span>
                     <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $user->user_id], ['confirm' => __('Are you sure you want to delete # {0}?', $user->user_id)]) ?>
+                    <span>|</span>
                 </td>
             </tr>
             <?php endforeach; ?>

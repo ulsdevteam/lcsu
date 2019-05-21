@@ -50,8 +50,11 @@ use Cake\Core\Configure;
                     <td><?= h($tray->modified) ?></td>
                     <td><?= h($tray->modified_user) ?></td>
                     <td class="actions">
+                        <span>|</span>
                         <?= $this->Html->link(__('View'), ['controller' => 'Trays', 'action' => 'view', $tray->tray_id]) ?>
+                        <span>|</span>
                         <?php if ($tray->status_id >= Configure::read('Completed')) echo $this->Html->link(__('Export'), ['controller' => 'Trays','action' => 'export', $tray->tray_id] , ['target' => '_blank','v-on:click' => 'download('.$tray->tray_id.')']) ?>
+                        <span>|</span>
                         <?php //if ($perm == 1) echo $this->Form->postLink(__('Delete'), ['controller' => 'Trays','action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]) ?>
                     </td>
                 </tr>

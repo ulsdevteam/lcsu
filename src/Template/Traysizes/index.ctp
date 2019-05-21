@@ -29,9 +29,12 @@
                 <td><?= $this->Number->format($traysize->shelf_height) ?></td>
                 <td><?= $this->Number->format($traysize->num_trays) ?></td>
                 <td class="actions">
+                    <span>|</span>
                     <?= $this->Html->link(__('View'), ['action' => 'view', $traysize->traysize_id]) ?>
+                    <span>|</span>
                     <!--<?= $this->Html->link(__('Edit'), ['action' => 'edit', $traysize->traysize_id]) ?>--!>
                     <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $traysize->traysize_id], ['confirm' => __('Are you sure you want to delete # {0}?', $traysize->traysize_id)]) ?>
+                    <span>|</span>
                 </td>
             </tr>
             <?php endforeach; ?>

@@ -31,8 +31,11 @@
             <tr>
                 <td><?= h($range->range_title) ?></td>
                 <td class="actions">
+                    <span>|</span>
                     <?= $this->Html->link(__('View'), ['action' => 'view', $range->range_id]) ?>
+                    <span>|</span>
                     <?php if ($perm == 1) echo $this->Html->link(__('Edit'), ['action' => 'edit', $range->range_id]) ?>
+                    <span>|</span>
                     <!-- <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $range->range_id], ['confirm' => __('Are you sure you want to delete # {0}?', $range->range_id)]) ?> -->
                 </td>
             </tr>

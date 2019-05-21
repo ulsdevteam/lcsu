@@ -46,9 +46,13 @@
                 <tr>
                     <td><?= h($shelf->shelf_barcode) ?></td>
                     <td class="actions">
+                        <span>|</span>
                         <?= $this->Html->link(__('View'), ['controller' => 'Shelves', 'action' => 'view', $shelf->shelf_id]) ?>
+                        <span>|</span>
                         <?= $this->Html->link(__('Print'), ['controller' => 'Shelves', 'action' => 'printLabel', $shelf->shelf_id]) ?>
+                        <span>|</span>
                         <?php if($perm == 1) echo $this->Html->link(__('Edit'), ['controller' => 'Shelves', 'action' => 'edit', $shelf->shelf_id]) ?>
+                        <span>|</span>
                         <!--<?php if($perm == 1) echo $this->Form->postLink(__('Delete'), ['controller' => 'Shelves', 'action' => 'delete', $shelf->shelf_id], ['confirm' => __('Are you sure you want to delete # {0}?', $shelf->shelf_id)]) ?>--!>
                     </td>
                 </tr>

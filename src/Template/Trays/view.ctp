@@ -46,7 +46,9 @@
                 <tr>
                     <td><?= h($book->book_barcode) ?></td>
                     <td class="actions">
+                        <span>|</span>
                         <?= $this->Html->link(__('View'), ['controller' => 'Books', 'action' => 'view', $book->book_id]) ?>
+                        <span>|</span>
                     </td>
                 </tr>
                 <?php endforeach; ?>

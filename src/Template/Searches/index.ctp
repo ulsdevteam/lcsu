@@ -44,24 +44,34 @@ use Cake\Core\Configure;
                                 $filter = $this->request->getQuery('filter');
                                 switch ($filter) {
                                     case 'incompleted':
+                                        echo '<span>|</span>';
                                         echo $this->Html->link(__('Review'), ['action' => 'incompleted', $result->tray_id]);
+                                        echo '<span>|</span>';
                                         break;
                                     case 'validate':
                                         if ($result->modified_user != $cur_user['username']) {
+                                            echo '<span>|</span>';
                                             echo $this->Html->link(__('Validate'), ['action' => 'validate', $result->tray_id]);
+                                            echo '<span>|</span>';
                                         }
                                         break;
                                     default:
+                                        echo '<span>|</span>';
                                         echo $this->Html->link(__('View'), ['controller' => 'Trays', 'action' => 'view', $result->tray_id]);
+                                        echo '<span>|</span>';
                                         echo $this->Html->link(__('Edit'), ['controller' => 'Trays', 'action' => 'edit', $result->tray_id]);
+                                        echo '<span>|</span>';
                                         break;
                                 }
                                 echo "</td>";
                             } else {
                                 echo "<td>".h($result->shelf_barcode)."</td>";
                                 echo "<td class='actions'>";
+                                echo '<span>|</span>';
                                 echo $this->Html->link(__('View'), ['controller' => 'Shelves', 'action' => 'view', $result->shelf_id]);
+                                echo '<span>|</span>';
                                 echo $this->Html->link(__('Print'), ['controller' => 'Shelves', 'action' => 'printLabel', $result->shelf_id]);
+                                echo '<span>|</span>';
                                 if($cur_user['permission_id'] == Configure::read('Managers')) echo $this->Html->link(__('Edit'), ['controller' => 'Shelves', 'action' => 'edit', $result->shelf_id]);
                                 echo "</td>";
                             }

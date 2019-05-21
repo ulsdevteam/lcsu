@@ -27,9 +27,13 @@
                 <td><?= h($permission->permission_title) ?></td>
                 <!-- <td><?= $this->Number->format($permission->permission_level) ?></td> -->
                 <td class="actions">
+                    <span>|</span>
                     <?= $this->Html->link(__('View'), ['action' => 'view', $permission->permission_id]) ?>
+                    <span>|</span>
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $permission->permission_id]) ?>
+                    <span>|</span>
                     <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $permission->permission_id], ['confirm' => __('Are you sure you want to delete # {0}?', $permission->permission_id)]) ?>
+                    <span>|</span>
                 </td>
             </tr>
             <?php endforeach; ?>

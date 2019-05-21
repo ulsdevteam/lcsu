@@ -41,8 +41,11 @@
                 <tr>
                     <td><?= h($module->module_title) ?></td>
                     <td class="actions">
+                        <span>|</span>
                         <?= $this->Html->link(__('View'), ['controller'=>'modules', 'action' => 'view', $module->module_id]) ?>
+                        <span>|</span>
                         <?php if ($perm == 1) echo $this->Html->link(__('Edit'), ['controller'=>'modules', 'action' => 'edit', $module->module_id]) ?>
+                        <span>|</span>
                         <?php //if ($perm == 1) echo $this->Form->postLink(__('Delete'), ['controller'=>'modules', 'action' => 'delete', $module->module_id], ['confirm' => __('Are you sure you want to delete # {0}?', $module->module_id)]) ?>
                     </td>
                 </tr>
