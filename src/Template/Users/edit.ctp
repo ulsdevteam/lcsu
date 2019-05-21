@@ -10,7 +10,7 @@
         <legend><?= __('Edit User') ?></legend>
         <?php
             echo $this->Form->control('username');
-            echo $this->Form->control('permission_id', ['options' => $permissions]);
+            echo $this->Form->control('permission_id', ['options' => $permissions, 'label' => 'Role']);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

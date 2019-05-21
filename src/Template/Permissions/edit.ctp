@@ -9,9 +9,9 @@
     <fieldset>
         <legend><?= __('Edit Permission') ?></legend>
         <?php
-            echo $this->Form->control('create_time');
+//            echo $this->Form->control('create_time');
+            echo $this->Form->control('permission_title', ['label' => 'Role']);
             echo $this->Form->control('permission_level');
-            echo $this->Form->control('permission_title');
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

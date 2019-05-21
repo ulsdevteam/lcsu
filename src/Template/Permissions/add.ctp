@@ -9,7 +9,7 @@
     <fieldset>
         <legend><?= __('Add Permission') ?></legend>
         <?php
-            echo $this->Form->control('permission_title');
+            echo $this->Form->control('permission_title', ['label' => 'Role']);
             echo $this->Form->control('permission_level');
         ?>
     </fieldset>

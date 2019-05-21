@@ -16,7 +16,7 @@
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col"><?= $this->Paginator->sort('permission_title') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('Role') ?></th>
                 <!-- <th scope="col"><?= $this->Paginator->sort('permission_level') ?></th> -->
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>

@@ -12,7 +12,7 @@
             <td><?= h($user->username) ?></td>
         </tr>
         <tr>
-            <th scope="row"><?= __('Permission') ?></th>
+            <th scope="row"><?= __('Role') ?></th>
             <td><?= $user->has('permission') ? $this->Html->link($user->permission->permission_title, ['controller' => 'Permissions', 'action' => 'view', $user->permission->permission_id]) : '' ?></td>
         </tr>
         <tr>

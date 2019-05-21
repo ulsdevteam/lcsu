@@ -8,7 +8,7 @@
     <h3><?= __('Permission detail') ?></h3>
     <table class="vertical-table">
         <tr>
-            <th scope="row"><?= __('Permission Title') ?></th>
+            <th scope="row"><?= __('Role') ?></th>
             <td><?= h($permission->permission_title) ?></td>
         </tr>
         <tr>

@@ -17,7 +17,7 @@
         <thead>
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('username') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('permission_title') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('Role') ?></th>
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
