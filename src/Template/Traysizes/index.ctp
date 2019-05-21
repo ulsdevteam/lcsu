@@ -18,7 +18,7 @@
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('tray_category') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('shelf_height') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('num_trays', "Number of the Tray") ?></th>
+                <th scope="col"><?= $this->Paginator->sort('num_trays', "Number of Trays") ?></th>
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
