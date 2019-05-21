@@ -21,6 +21,7 @@ class RangesController extends AppController
      */
     public function index() 
     {
+        $this->paginate =  ['order' => ['Ranges.range_title' => 'ASC']];
         $ranges = $this->paginate($this->Ranges);
         
         $this->set(compact('ranges'));
@@ -36,8 +37,9 @@ class RangesController extends AppController
     public function view($id = null) 
     {
         $range = $this->Ranges->get($id);
-        $modules = $this->Ranges->Modules->find('all')->where(['range_id' => $id]);
-        $modules = $this->paginate($modules);
+        $this->paginate =  ['order' => ['Modules.module_title' => 'ASC']];
+        $modules = $this->paginate($this->Ranges->Modules->find('all')->where(['range_id' => $id]));
+        
         $this->set(compact('range', $range, 'modules'));
     }
 

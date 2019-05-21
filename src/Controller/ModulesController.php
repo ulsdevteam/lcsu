@@ -21,6 +21,7 @@ class ModulesController extends AppController
      */
     public function index()
     {
+        $this->paginate =  ['order' => ['Modules.module_title' => 'ASC']];
         $modules = $this->paginate($this->Modules);
 
         $this->set(compact('modules'));
@@ -37,8 +38,9 @@ class ModulesController extends AppController
     {
         $module = $this->Modules->get($id);
         $range = $this->Modules->Ranges->get($module->range_id);
-        $shelves = $this->Modules->Shelves->find('all')->where(['module_id' => $id]);
-        $shelves = $this->paginate($shelves);
+        $this->paginate =  ['order' => ['Shelves.shelf_barcode' => 'ASC']];
+        $shelves = $this->paginate($this->Modules->Shelves->find('all')->where(['module_id' => $id]));
+        
         $this->set(compact('module', 'range', 'shelves'));
     }
 

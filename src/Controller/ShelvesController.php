@@ -23,7 +23,8 @@ class ShelvesController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Traysizes']
+            'contain' => ['Traysizes'],
+            'order' => ['Shelves.shelf_barcode' => 'ASC']
         ];
         $this->set( 'shelves', $this->paginate( $this->Shelves));
     }

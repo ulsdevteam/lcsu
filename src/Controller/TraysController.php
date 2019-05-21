@@ -22,7 +22,8 @@ class TraysController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Status']
+            'contain' => ['Status'],
+            'order' => ['Trays.tray_barcode' => 'ASC']
         ];
 
         $filter = $this->request->getQuery('filter');
@@ -49,6 +50,7 @@ class TraysController extends AppController
     public function view($id = null)
     {
         $tray = $this->Trays->get($id);
+        $this->paginate = ['order' => ['Books.book_barcode' => 'ASC']];
         $books = $this->paginate($this->Trays->Books->find('all')->where(['tray_id' => $id]));
         $status = $this->Trays->Status->find('all')->where(['status_id' => $tray->status_id]);
         $this->set(compact('tray', 'books', 'status'));
