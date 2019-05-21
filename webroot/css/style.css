@@ -537,14 +537,6 @@ table td {
     margin-top: 50px;
 }
 
-.index-table .status{
-    background-clip: padding-box;
-    background-color: #1798A5;
-    color: white;
-    border-radius: 3px;
-    padding:5px;
-}
-
 .searchbar {
     margin-bottom: 15px;
     margin-right: 8px;

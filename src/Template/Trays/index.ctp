@@ -23,7 +23,7 @@
                 <?php foreach ($trays as $tray): ?>
                 <tr>
                     <td><?= h($tray->tray_barcode) ?></td>
-                    <td><span class="status"><?= h($tray->status->status_des) ?></span></td>
+                    <td><?= h($tray->status->status_des) ?></td>
                     <td><?= h($tray->created) ?></td>
                     <td><?= h($tray->modified) ?></td>
                     <td><?= h($tray->modified_user) ?></td>
