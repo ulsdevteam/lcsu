@@ -16,7 +16,7 @@ font-weight: bold;
             $objs = ['MANAGEMENT' => ['Browse' => ['controllers' => ['Ranges'], 'action' => $actions],
                                       'Traysizes' => ['controllers' => ['Traysizes'], 'action' => $actions],
                                       'Next Available Shelf' => ['controllers' => ['Shelves'], 'action' => ['findAvailable']]],
-                     'SCANNING' => [/*'Scan a Tray' => ['controllers' => ['Trays', 'Books'], 'action' => ['scanInit', 'scan']],*/
+                     'SCANNING' => ['Scan a Tray' => ['controllers' => ['Trays', 'Books'], 'action' => ['scanInit', 'scan']],
                                     'Verify a Tray' => ['controllers' => ['Trays', 'Books'], 'action' => ['index', 'scan-list'], 'filter' => 'validate'],
                                     'Review Incompleted Trays' => ['controllers' => ['Trays', 'Books'], 'action' => ['index', 'scan'], 'filter' => 'incompleted']
                                                                  ]];
