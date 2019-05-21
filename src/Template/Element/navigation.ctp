@@ -17,7 +17,7 @@ font-weight: bold;
                                       'Traysizes' => ['controllers' => ['Traysizes'], 'action' => $actions],
                                       'Next Available Shelf' => ['controllers' => ['Shelves'], 'action' => ['findAvailable']]],
                      'SCANNING' => ['Scan a Tray' => ['controllers' => ['Trays', 'Books'], 'action' => ['scanInit', 'scan']],
-                                    'Verify a Tray' => ['controllers' => ['Trays', 'Books'], 'action' => ['index', 'scan-list'], 'filter' => 'validate'],
+                                    'Verify Trays' => ['controllers' => ['Trays', 'Books'], 'action' => ['index', 'scan-list'], 'filter' => 'validate'],
                                     'Review Incompleted Trays' => ['controllers' => ['Trays', 'Books'], 'action' => ['index', 'scan'], 'filter' => 'incompleted']
                                                                  ]];
             if (isset($cur_user) && $cur_user['permission_id'] == 1) {
