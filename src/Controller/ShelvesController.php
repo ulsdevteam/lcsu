@@ -223,7 +223,7 @@ class ShelvesController extends AppController
         $check_amount = $this->Shelves->Trays->find('all')->where(['shelf_id' => $id])->count();
         // Update traysize, create equal amount of trays, and redirect to view page
         if ($this->request->getQuery('traysize_id') && $check_amount == 0) {
-            $traysize = $this->Shelves->Traysizes->get( $this->request->getQuery('traysizes'));
+             $traysize = $this->Shelves->Traysizes->find('all')->where(['traysize_id' => $this->request->getQuery('traysize_id')])->first();
             // Update traysize
             $shelf->traysize_id = $traysize->traysize_id;
             $shelf->tray_category = $traysize->tray_category;
@@ -234,8 +234,8 @@ class ShelvesController extends AppController
                 $tray->created = date("Y-m-d H:i:s");
                 $tray->tray_title = 'T'.sprintf("%02d", $i);
                 $this->Shelves->Trays->save($tray);
-                $this->Flash->success(__('Created # {0} trays successfully.', $traysize->num_trays));
             }
+            $this->Flash->success(__('Created {0} trays successfully.', $traysize->num_trays));
         } else {
             $this->Flash->error(__('Fail to allocate new trays.'));
         }
