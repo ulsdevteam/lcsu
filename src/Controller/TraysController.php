@@ -149,7 +149,7 @@ class TraysController extends AppController
      {
          $tray = $this->Trays->newEntity();
          if ($this->request->is('post')) {
-             $tray = $this->Trays->get($this->request->getData('tray_barcode'));
+             $tray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
              if (!isset($tray)) {
                 $this->Flash->error(__('The tray is not in the database.'));
             } else {
