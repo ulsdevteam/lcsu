@@ -61,8 +61,8 @@ use Cake\Core\Configure;
                         {
                             echo '<span>|</span>';
                             echo $this->Html->link(__('Export'), ['controller' => 'Trays','action' => 'export', $tray->tray_id] , ['target' => '_blank','v-on:click' => 'download('.$tray->tray_id.')']);
-                            echo '<span>|</span>';
                         }?>
+                        <span>|<span>
                         <?= $this->Html->link(__('Print Tray Label'), ['controller' => 'Trays', 'action' => 'printLabel', $tray->tray_id], ['title' => 'Print this tray barcode']); ?>
                         <span>|</span>
                     </td>
