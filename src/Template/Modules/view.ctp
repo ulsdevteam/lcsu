@@ -22,9 +22,11 @@
     
     <div class="child-table">
         <h5 class="page-title">Located shelves</h5>
-        <?= $this->Html->link(__('Print All Shelf Labels').'|', ['action' => 'printLabels', $module->module_id], ['class'=>'func-btn tooltips', 'title' => 'Print all shelf labels in this module']);?>
+        <span class='func-btn'>|</span>
+        <?= $this->Html->link(__('Print All Shelf Labels'), ['action' => 'printLabels', $module->module_id], ['class'=>'func-btn tooltips', 'title' => 'Print all shelf labels in this module']);?>
+        <span class='func-btn'>|</span>    
         <?php if ($perm == 1) {
-        echo $this->Html->link('|'. __('Add Shelf').'|',
+        echo $this->Html->link( __('Add Shelf'),
                             array('controller'=>'shelves', 'action' => 'add', 'module_id' => $module->module_id),
                             array(
                                 'bootstrap-type' => 'primary',
@@ -34,6 +36,7 @@
             
         }
         ?>
+        <span class='func-btn'>|</span>
         <table cellpadding="0" cellspacing="0">
             <thead>
                 <tr>

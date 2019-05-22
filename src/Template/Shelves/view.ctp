@@ -9,8 +9,13 @@ use Cake\Core\Configure;
 
     <?php 
         $perm = $cur_user['permission_id'];
-        echo $this->Html->link('|'.__('Print Shelf Label').'|', ['action' => 'printLabel', $shelf->shelf_id], ['class'=>'func-btn tooltips', 'title' => 'Print this shelf barcode']); 
-        if ($perm == 1 )echo $this->Html->link('|'.__('Edit'), ['action' => 'edit', $shelf->shelf_id], ['class'=>'func-btn']); 
+        echo "<span class='func-btn'>|</span>";
+        echo $this->Html->link(__('Print Shelf Label'), ['action' => 'printLabel', $shelf->shelf_id], ['class'=>'func-btn tooltips', 'title' => 'Print this shelf barcode']); 
+        echo "<span class='func-btn'>|</span>";
+        if ($perm == 1 ) {
+            echo $this->Html->link(__('Edit'), ['action' => 'edit', $shelf->shelf_id], ['class'=>'func-btn']); 
+            echo "<span class='func-btn'>|</span>";
+        }
     ?>
     <table class="vertical-table">
         <tr>
@@ -58,7 +63,8 @@ use Cake\Core\Configure;
                             echo $this->Html->link(__('Export'), ['controller' => 'Trays','action' => 'export', $tray->tray_id] , ['target' => '_blank','v-on:click' => 'download('.$tray->tray_id.')']);
                             echo '<span>|</span>';
                         }?>
-                        <?= $this->Html->link(__('Print Tray Label').'|', ['controller' => 'Trays', 'action' => 'printLabel', $tray->tray_id], ['title' => 'Print this tray barcode']); ?>
+                        <?= $this->Html->link(__('Print Tray Label'), ['controller' => 'Trays', 'action' => 'printLabel', $tray->tray_id], ['title' => 'Print this tray barcode']); ?>
+                        <span>|</span>
                     </td>
                 </tr>
                 <?php endforeach; ?>
