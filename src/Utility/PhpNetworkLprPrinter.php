@@ -241,10 +241,11 @@ class PhpNetworkLprPrinter{
          *
          * @access      public
          * @param       string $label_text The shelf label content
+         * @return      boolean true indicates success, on false check getErrStr() for possible message
          */
         public function printShelfLabel($label_text) {
             if ($this->getErrStr()) {
-                return "Error: ".$this->getErrStr();
+                return false;
             }
             $l1 = "{^A^PS^WKLabel1^%2^H0715^V0287^L0202^P02^XB1$label_text";
             $l2 = "^%2^H0727^V0198^B103102*$label_text*";
@@ -258,10 +259,11 @@ class PhpNetworkLprPrinter{
          *
          * @access      public
          * @param       string $label_text The tray label content
+         * @return      boolean true indicates success, on false check getErrStr() for possible message
          */
         public function printTrayLabel($label_text) {
             if ($this->getErrStr()) {
-                return "Error: ".$this->getErrStr();
+                return false;
             }
 	    $barcode   = "*$label_text*";
             $l1 = "{^A^H0140^V0025^L0404^S$label_text";

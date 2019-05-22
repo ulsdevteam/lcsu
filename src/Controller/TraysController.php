@@ -347,7 +347,7 @@ class TraysController extends AppController
             if ($lpr) {
                 $result = $lpr->printTrayLabel($tray->tray_barcode);
                 if (!$result) {
-                    $this->Flash->error($lpr->getErrStr());
+                    $this->Flash->error("Error: ".$lpr->getErrStr());
                 } else {
                     $this->Flash->success(__('The label is printed out successfully.'));
                 }
