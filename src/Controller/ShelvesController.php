@@ -142,9 +142,9 @@ class ShelvesController extends AppController
             $shelf = $this->Shelves->get($id);
             $lpr = new PhpNetworkLprPrinter(Configure::read('HOST'), Configure::read('PORT'));
             if ($lpr) {
-                $errMsg = $lpr->printShelfLabel($shelf->shelf_barcode);
-                if ($errMsg) {
-                    $this->Flash->error($errMsg);
+                $result = $lpr->printShelfLabel($shelf->shelf_barcode);
+                if (!$result) {
+                    $this->Flash->error($lpr->getErrStr());
                 } else {
                     $this->Flash->success(__('The label is printed out successfully.'));
                 }
@@ -170,9 +170,9 @@ class ShelvesController extends AppController
             $lpr = new PhpNetworkLprPrinter(Configure::read('HOST'), Configure::read('PORT'));
             if ($lpr) {
                 foreach ($trays as $tray) {
-                    $errMsg = $lpr->printTrayLabel($tray->tray_barcode);
-                    if ($errMsg) {
-                        $this->Flash->error($errMSg);
+                    $result = $lpr->printTrayLabel($tray->tray_barcode);
+                    if (!$result) {
+                        $this->Flash->error($lpr->getErrStr());
                         return $this->redirect(['action' => 'view', $shelf->shelf_id]);
                     }
                 }

@@ -345,9 +345,9 @@ class TraysController extends AppController
             $tray = $this->Trays->get($id);
             $lpr = new PhpNetworkLprPrinter(Configure::read('HOST'), Configure::read('PORT'));
             if ($lpr) {
-                $errMsg = $lpr->printShelfLabel($tray->tray_barcode);
-                if ($errMsg) {
-                    $this->Flash->error($errMsg);
+                $result = $lpr->printTrayLabel($tray->tray_barcode);
+                if (!$result) {
+                    $this->Flash->error($lpr->getErrStr());
                 } else {
                     $this->Flash->success(__('The label is printed out successfully.'));
                 }

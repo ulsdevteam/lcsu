@@ -250,7 +250,7 @@ class PhpNetworkLprPrinter{
             $l2 = "^%2^H0727^V0198^B103102*$label_text*";
             $l3 = "^%2^H0501^V0093^P02^RDB00,026,029,*$label_text*^~A0^Q1^Z}";
             $shelf_label = "$l1" . "$l2" . "$l3";
-            $this->printText($shelf_label);
+            return $this->printText($shelf_label);
         }
 
         /**
@@ -272,7 +272,7 @@ class PhpNetworkLprPrinter{
             $l4 = "$barcode";
             $l5 = "^Q1^Z}";
             $tray_label = "$l1" . "$l2" . "$l3"."$l4"."$l5";
-            $this->printText($tray_label);
+            return $this->printText($tray_label);
         }
 
         /**
@@ -363,6 +363,7 @@ class PhpNetworkLprPrinter{
                         fclose($connection);
 
                 }
+                return true;
         }
 }
 
