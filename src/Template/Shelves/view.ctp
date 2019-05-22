@@ -23,7 +23,7 @@ use Cake\Core\Configure;
         </tr>
         <tr>
             <th scope="row"><?= __('Traysize') ?></th>
-            <td><?php if (isset($traysize)) echo h($traysize->tray_category) ?></td>
+            <td><?php if (isset($shelf->traysize)) echo h($shelf->traysize->tray_category) ?></td>
         </tr>
     </table>
 
@@ -58,9 +58,7 @@ use Cake\Core\Configure;
                             echo $this->Html->link(__('Export'), ['controller' => 'Trays','action' => 'export', $tray->tray_id] , ['target' => '_blank','v-on:click' => 'download('.$tray->tray_id.')']);
                             echo '<span>|</span>';
                         }?>
-                        <?= $this->Html->link(__('Print Tray Label').'|', ['controller' => 'Trays', 'action' => 'printLabel', $tray->tray_id], ['class'=>'func-btn tooltips', 'title' => 'Print this tray barcode']); ?>
-                        
-                        <?php //if ($perm == 1) echo $this->Form->postLink(__('Delete'), ['controller' => 'Trays','action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]) ?>
+                        <?= $this->Html->link(__('Print Tray Label').'|', ['controller' => 'Trays', 'action' => 'printLabel', $tray->tray_id], ['title' => 'Print this tray barcode']); ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

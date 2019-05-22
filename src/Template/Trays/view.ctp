@@ -19,6 +19,10 @@
             <td><?= h($tray->tray_barcode) ?></td>
         </tr>
         <tr>
+            <th scope="row"><?= __('Status') ?></th>
+            <td><?= h($tray->status->status_des) ?></td>
+        </tr>
+        <tr>
             <th scope="row"><?= __('Modified By') ?></th>
             <td><?= h($tray->modified_user) ?></td>
         </tr>

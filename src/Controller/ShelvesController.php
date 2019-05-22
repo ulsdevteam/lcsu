@@ -38,12 +38,9 @@ class ShelvesController extends AppController
      */
     public function view($id = null)
     {
-        $shelf = $this->Shelves->get($id);
-        $module = $this->Shelves->Modules->get($shelf->module_id);
+        $shelf = $this->Shelves->get($id, ['contain' => ['Traysizes']]);
         $trays = $this->paginate($this->Shelves->Trays->find('all', ['order' => ['tray_title' => 'ASC']])->where(['shelf_id' => $id])->contain(['Status']));
-        if ($shelf->traysize_id)
-            $traysize = $this->Shelves->Traysizes->get($shelf->traysize_id);
-        $this->set(compact('shelf', 'module', 'trays', 'traysize'));
+        $this->set(compact('shelf', 'trays'));
     }
 
     /**
