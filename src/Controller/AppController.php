@@ -33,7 +33,7 @@ use ContactManager\Plugin as ContactManagerPlugin;
  *
  * @link https://book.cakephp.org/3.0/en/controllers.html#the-app-controller
  */
-class AppController extends Controller 
+class AppController extends Controller
 {
 
     /**
@@ -45,7 +45,7 @@ class AppController extends Controller
      *
      * @return void
      */
-    public function initialize() 
+    public function initialize()
     {
         parent::initialize();
 
@@ -79,9 +79,9 @@ class AppController extends Controller
         // Load a plugin with a vendor namespace by 'short name'
         $this->addPlugin('CakeDC/OracleDriver', ['bootstrap' => true]);
     }
-    
+
     /**
-     * Block error messages from PHP error messages, show $user issue 
+     * Block error messages from PHP error messages, show $user issue
      * Comment beforeRender function to check PHP error messages
      */
     public function beforeRender(Event $event)
@@ -90,9 +90,9 @@ class AppController extends Controller
             $this->set('cur_user', $this->Auth->user());
         }
     }
-    
-    public function isAuthorized($user) 
-    {   
+
+    public function isAuthorized($user)
+    {
         if ($user == NULL)
             $this->blockInvalidUser();
         $user = $this->Auth->user();
@@ -109,16 +109,16 @@ class AppController extends Controller
                 $this->blockInvalidUser();
                 break;
         }
-        
+
         return true;
     }
-    
-    public function blockInvalidUser() 
+
+    public function blockInvalidUser()
     {
         $this->redirect(['controller' => 'error', 'action' => 'invalid_user']);
     }
-    
-    public function actionNotAllow() 
+
+    public function actionNotAllow()
     {
         $this->Flash->error(__('You are not allow to access this location.'));
         $this->redirect(['action' => 'index']);
