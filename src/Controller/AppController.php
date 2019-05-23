@@ -97,11 +97,13 @@ class AppController extends Controller
             $this->blockInvalidUser();
         $user = $this->Auth->user();
         $currentAction = $this->request->getParam('action');
+        $currentController = $this->request->getParam('controller');
         switch ($user['permission_id']) {
             case Configure::read('Managers'):
                 break;
             case Configure::read('Scanners'):
-                if ($currentAction === 'add' || $currentAction === 'edit' || $currentAction === 'delete') {
+                $allow = ['Trays', 'Books'];
+                if ($currentAction === 'add' || $currentAction === 'edit' || $currentAction === 'delete' || !in_array($currentController, $allow)) {
                     $this->actionNotAllow();
                 }
                 break;
@@ -121,7 +123,7 @@ class AppController extends Controller
     public function actionNotAllow()
     {
         $this->Flash->error(__('You are not allow to access this location.'));
-        $this->redirect(['action' => 'index']);
+        $this->redirect(['controllrt' => 'trays', 'action' => 'index']);
     }
 
 }
