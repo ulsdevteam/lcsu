@@ -13,52 +13,14 @@ use Cake\Datasource\ConnectionManager;
 class ItemBarcodeController extends AppController
 {
     /**
-     * Index method
+     * Search method, to check the item existence in voyager
      *
-     * @return \Cake\Http\Response|void
+     * @param string $item_barcode book_barcode.
+     * @return boolean return false indicates that the item is invalid.
      */
-    public function index()
-    {
-        $itemBarcode = $this->paginate($this->ItemBarcode);
-        $connection = ConnectionManager::get('voyager'); 
-//        $results=$connection->execute("SELECT * FROM ITEM_BARCODE WHERE ITEM_BARCODE = '31735013490895'")->fetchAll('assoc'); 
-//        
-//        echo json_encode($results);
-        
-        $test = $this->ItemBarcode->find('all')->where(['ITEM_BARCODE' => 31735013490895])->contain(['Item'])->first();
-        $results=$connection->execute("SELECT * FROM LOCATION WHERE LOCATION_ID = ".$test['item']['PERM_LOCATION'])->fetchAll('assoc'); 
-//        $location = $this->ItemBarcode->Item->find('all')->where(['LOCATION_ID' => $test['item']['PERM_LOCATION']])->contain(['Location']);
-//        $location = $this->ItemBarcode->Item->where(['LOCATION_ID' => $test['item']['PERM_LOCATION']])->contain(['Location']);
-        echo json_encode($test['item']['PERM_LOCATION']);
-        echo json_encode($results[0]['LOCATION_CODE']);
-        
-        $this->set(compact('itemBarcode'));
-    }
-
-    /**
-     * View method
-     *
-     * @param string|null $id Item Barcode id.
-     * @return \Cake\Http\Response|void
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $itemBarcode = $this->ItemBarcode->get($id);
-
-        $this->set('itemBarcode', $itemBarcode);
-    }    
-    
-    
     public function search($item_barcode)
     {
-        $connection = ConnectionManager::get('voyager');   
-        $itembarcode = $this->ItemBarcode->find('all')->where(['ITEM_BARCODE' => $item_barcode, 'BARCODE_STATUS' => 1])->contain(['Item'])->first();
-
-        $results=$connection->execute("SELECT * FROM LOCATION WHERE LOCATION_ID = ".$itembarcode['item']['PERM_LOCATION'])->fetchAll('assoc');
-        if ($results[0]['LOCATION_CODE'] != 'tb') {
-            $this->Flash->error("'".$item_barcode."' is not in Thomas Boulevard LCSU.");
-        }
+        $result = $this->ItemBarcode->find('all')->where(['ITEM_BARCODE' => $item_barcode, 'BARCODE_STATUS' => 1])->first();
+        return isset($result);
     }
-    
 }

@@ -16,9 +16,9 @@ use Cake\ORM\Entity;
  * @property int|null $LIBRARY_ID
  * @property int|null $MFHD_COUNT
  *
- * @property \App\Model\Entity\LEDGER[] $l_e_d_g_e_r
- * @property \App\Model\Entity\REQUESTGROUP[] $r_e_q_u_e_s_t_g_r_o_u_p
- * @property \App\Model\Entity\SORTGROUP[] $s_o_r_t_g_r_o_u_p
+ * @property \App\Model\Entity\LEDGER[] $LEDGER
+ * @property \App\Model\Entity\REQUESTGROUP[] $REQUESTGROUP
+ * @property \App\Model\Entity\SORTGROUP[] $SORTGROUP
  */
 class Location extends Entity
 {
@@ -41,8 +41,8 @@ class Location extends Entity
         'SUPPRESS_IN_OPAC' => true,
         'LIBRARY_ID' => true,
         'MFHD_COUNT' => true,
-        'l_e_d_g_e_r' => true,
-        'r_e_q_u_e_s_t_g_r_o_u_p' => true,
-        's_o_r_t_g_r_o_u_p' => true
+        'LEDGER' => true,
+        'REQUESTGROUP' => true,
+        'SORTGROUP' => true
     ];
 }

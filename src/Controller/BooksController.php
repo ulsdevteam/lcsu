@@ -53,30 +53,41 @@ class BooksController extends AppController
         $book = $this->Books->newEntity();
         if ($this->request->is('post')) {
             $tray = $this->Books->Trays->get($this->request->getQuery('tray_id'));
-            
+            $book = $this->Books->patchEntity($book, $this->request->getData());
+            $book->tray_id = $tray->tray_id;
+            $id =  $this->request->getQuery('id');
+            $count = $this->request->getQuery('count');
             if ($tray->status_id == Configure::read('Incompleted')) {
-                $book = $this->Books->patchEntity($book, $this->request->getData());
-                $book->tray_id = $tray->tray_id;
-                if ($this->Books->save($book)) {
-                    $this->Flash->success(__('The book has been saved.'));
+                $itembarcode = new ItemBarcodeController();
+                $isExist = $itembarcode->search($book->book_barcode);
+                if ($isExist) {
+                    if ($this->Books->save($book)) {
+                        $this->Flash->success(__('The book has been saved.'));
 
-                    $id =  $this->request->getQuery('id');
-                    $count = $this->request->getQuery('count');
-                    if ($id + 1 > $count) {
-                        // Wrap up the process
-                        return $this->redirect(['controller' => 'trays',
-                                                'action' => 'scanEnd',
-                                                $book['tray_id'],
-                                                'source' => $this->request->getQuery('source'),
-                                                'count' => $count]);
-                    } else {
-                        // Keep to scanning the next book
-                        return $this->redirect(['action' => 'scan',
-                                                'tray_id' => $book['tray_id'],
-                                                'source' => $this->request->getQuery('source'),
-                                                'count' => $count,
-                                                'id' => $id+1]);
+                        if ($id + 1 > $count) {
+                            // Wrap up the process
+                            return $this->redirect(['controller' => 'trays',
+                                                    'action' => 'scanEnd',
+                                                    $book['tray_id'],
+                                                    'source' => $this->request->getQuery('source'),
+                                                    'count' => $count]);
+                        } else {
+                            // Keep to scanning the next book
+                            return $this->redirect(['action' => 'scan',
+                                                    'tray_id' => $book['tray_id'],
+                                                    'source' => $this->request->getQuery('source'),
+                                                    'count' => $count,
+                                                    'id' => $id+1]);
+                        }
                     }
+                } else {
+                    // Prevent to insert the book in database.
+                    return $this->redirect(['action' => 'scan',
+                                            'tray_id' => $book['tray_id'],
+                                            'source' => $this->request->getQuery('source'),
+                                            'count' => $count,
+                                            'id' => $id,
+                                            'block_item' => $book->book_barcode]);
                 }
             }
             $this->Flash->error(__('The book could not be saved. Please, try again.'));

@@ -34,12 +34,12 @@ use Cake\ORM\Entity;
  * @property string|null $MAGNETIC_MEDIA
  * @property string|null $SENSITIZE
  *
- * @property \App\Model\Entity\HOLDRECALL[] $h_o_l_d_r_e_c_a_l_l
- * @property \App\Model\Entity\NOTETYPE[] $n_o_t_e_t_y_p_e
- * @property \App\Model\Entity\ITEMSTATU[] $i_t_e_m_s_t_a_t_u_s
- * @property \App\Model\Entity\ITEMTYPE[] $i_t_e_m_t_y_p_e
- * @property \App\Model\Entity\MEDIASCHEDULE[] $m_e_d_i_a_s_c_h_e_d_u_l_e
- * @property \App\Model\Entity\RESERVELIST[] $r_e_s_e_r_v_e_l_i_s_t
+ * @property \App\Model\Entity\HOLDRECALL[] $HOLDRECALL
+ * @property \App\Model\Entity\NOTETYPE[] $NOTETYPE
+ * @property \App\Model\Entity\ITEMSTATUS[] $ITEMSTATUS
+ * @property \App\Model\Entity\ITEMTYPE[] $ITEMTYPE
+ * @property \App\Model\Entity\MEDIASCHEDULE[] $MEDIASCHEDULE
+ * @property \App\Model\Entity\RESERVELIST[] $RESERVELIST
  */
 class Item extends Entity
 {
@@ -80,11 +80,11 @@ class Item extends Entity
         'SHORT_LOAN_CHARGES' => true,
         'MAGNETIC_MEDIA' => true,
         'SENSITIZE' => true,
-        'h_o_l_d_r_e_c_a_l_l' => true,
-        'n_o_t_e_t_y_p_e' => true,
-        'i_t_e_m_s_t_a_t_u_s' => true,
-        'i_t_e_m_t_y_p_e' => true,
-        'm_e_d_i_a_s_c_h_e_d_u_l_e' => true,
-        'r_e_s_e_r_v_e_l_i_s_t' => true
+        'HOLDRECALL' => true,
+        'NOTETYPE' => true,
+        'ITEMSTATUS' => true,
+        'ITEMTYPE' => true,
+        'MEDIASCHEDULE' => true,
+        'RESERVELIST' => true
     ];
 }
