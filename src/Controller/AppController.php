@@ -80,22 +80,11 @@ class AppController extends Controller
         $this->addPlugin('CakeDC/OracleDriver', ['bootstrap' => true]);
     }
 
-    /**
-     * Block error messages from PHP error messages, show $user issue
-     * Comment beforeRender function to check PHP error messages
-     */
-    public function beforeRender(Event $event)
-    {
-        if ($this->Auth->user()) {
-            $this->set('cur_user', $this->Auth->user());
-        }
-    }
-
     public function isAuthorized($user)
     {
         if ($user == NULL)
             $this->blockInvalidUser();
-        $user = $this->Auth->user();
+        $this->set('cur_user', $user);
         $currentAction = $this->request->getParam('action');
         $currentController = $this->request->getParam('controller');
         switch ($user['permission_id']) {
