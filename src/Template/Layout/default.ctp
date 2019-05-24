@@ -37,15 +37,18 @@ $cakeDescription = 'LCSU';
     <?= $this->Html->script(array('https://unpkg.com/axios/dist/axios.min.js'))?>
 </head>
 <body>
+    <?php use Cake\Core\Configure;?>
     <nav class="top-bar expanded" data-topbar role="navigation">
         <div class="top-bar-section searchbar right">
-            <?= $this->Form->create(false, ['type' => 'GET', 'url' => ['controller' => 'searches', 'action' => 'index']]) ?>
-                <div class="input-group">
-                    <?php
-                        echo $this->Form->control('keyword', ['label' => false, 'placeholder' => 'Search']);
-                    ?>
-                </div>
-            <?= $this->Form->end() ?>
+            <?php 
+                if ((isset($cur_user) && $cur_user['permission_id'] == Configure::read('Managers'))) {
+                    echo $this->Form->create(false, ['type' => 'GET', 'url' => ['controller' => 'searches', 'action' => 'index']]);
+                    echo "<div class='input-group'>";
+                    echo $this->Form->control('keyword', ['label' => false, 'placeholder' => 'Search']);
+                    echo "</div>";
+                    echo $this->Form->end();
+                }
+            ?>
         </div>
 
     </nav>
