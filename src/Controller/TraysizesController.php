@@ -102,7 +102,7 @@ class TraysizesController extends AppController
 
     public function listAllTraysizes()
     {
-        $this->viewBuilder()->layout(false);
+        $this->viewBuilder()->setLayout(false);
         $traysize = $this->Traysizes->find('all');
         $this->set('test', json_encode($traysize));
     }
