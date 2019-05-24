@@ -144,7 +144,7 @@ class ShelvesController extends AppController
             if ($lpr) {
                 $result = $lpr->printShelfLabel($shelf->shelf_barcode);
                 if (!$result) {
-                    $this->Flash->error("Error: ".$lpr->getErrStr());
+                    $this->Flash->error(__('Error').": ".$lpr->getErrStr());
                 } else {
                     $this->Flash->success(__('The label is printed out successfully.'));
                 }
@@ -172,7 +172,7 @@ class ShelvesController extends AppController
                 foreach ($trays as $tray) {
                     $result = $lpr->printTrayLabel($tray->tray_barcode);
                     if (!$result) {
-                        $this->Flash->error("Error: ".$lpr->getErrStr());
+                        $this->Flash->error(__('Error').": ".$lpr->getErrStr());
                         return $this->redirect(['action' => 'view', $shelf->shelf_id]);
                     }
                 }

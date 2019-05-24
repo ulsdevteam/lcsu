@@ -132,7 +132,7 @@ class ModulesController extends AppController
                 foreach ($shelves as $shelf) {
                     $result = $lpr->printShelfLabel($shelf->shelf_barcode);
                     if (!$result) {
-                        $thie->Flash->error("Error: ".$lpr->getErrStr());
+                        $thie->Flash->error(__('Error').": ".$lpr->getErrStr());
                         return $this->redirect(['action' => 'view', $module->module_id]);
                     }
                 }            
