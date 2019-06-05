@@ -57,11 +57,6 @@ use Cake\Core\Configure;
                     <td class="actions">
                         <span>|</span>
                         <?= $this->Html->link(__('View'), ['controller' => 'Trays', 'action' => 'view', $tray->tray_id]) ?>
-                        <?php if ($tray->status_id >= Configure::read('Completed')) 
-                        {
-                            echo '<span>|</span>';
-                            echo $this->Html->link(__('Export'), ['controller' => 'Trays','action' => 'export', $tray->tray_id] , ['target' => '_blank','v-on:click' => 'download('.$tray->tray_id.')']);
-                        }?>
                         <span>|<span>
                         <?= $this->Html->link(__('Print Tray Label'), ['controller' => 'Trays', 'action' => 'printLabel', $tray->tray_id], ['title' => 'Print this tray barcode']); ?>
                         <span>|</span>
