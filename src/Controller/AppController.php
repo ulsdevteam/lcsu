@@ -82,11 +82,16 @@ class AppController extends Controller
 
     public function isAuthorized($user)
     {
-        if ($user == NULL)
-            $this->blockInvalidUser();
-        $this->set('cur_user', $user);
         $currentAction = $this->request->getParam('action');
         $currentController = $this->request->getParam('controller');
+        if ($currentAction === 'export' && $currentController === 'Trays') {
+            // We trust that the Trays/export API action is sufficiently validated within Apache (by IP)
+            return true;
+        }
+        if ($user == NULL) {
+            $this->blockInvalidUser();
+        }
+        $this->set('cur_user', $user);
         switch ($user['permission_id']) {
             case Configure::read('Managers'):
                 break;
@@ -112,7 +117,7 @@ class AppController extends Controller
     public function actionNotAllow()
     {
         $this->Flash->error(__('You are not allow to access this location.'));
-        $this->redirect(['controllrt' => 'trays', 'action' => 'index']);
+        $this->redirect(['controller' => 'trays', 'action' => 'index']);
     }
 
 }

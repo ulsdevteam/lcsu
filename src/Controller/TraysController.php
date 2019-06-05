@@ -310,7 +310,7 @@ class TraysController extends AppController
      * @example: R16-M13-S03-T01 03/04/19   31735064253499	2019/03/04 09:01:42	pittlcsu 
      * @see https://book.cakephp.org/3.0/en/controllers/request-response.html#sending-a-string-as-file
      */
-    public function export()
+    public function export($testonly = false)
     {
         $trays = $this->Trays->find('all')->contain(['Books'])->where(['Trays.status_id' => Configure::read('Completed')]);
         $this->Flash->success(json_encode($trays));
@@ -320,7 +320,7 @@ class TraysController extends AppController
                 foreach ($tray->books as $book) {
                     $content .= $tray->tray_barcode.' '.date('m/d/Y', strtotime($tray->created))."\t".$book->book_barcode."\t".date('Y/m/d H:i:s', strtotime($tray->created))."\t".'pittlcsu'."\r\n";
                 }
-                if ($tray->status_id == Configure::read('Completed')) {
+                if (!$testonly) {
                     $tray->status_id = Configure::read('Exported');
                     $this->Trays->save($tray);
                 }
