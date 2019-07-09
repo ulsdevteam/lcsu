@@ -10,7 +10,7 @@
         <legend><?= __('Add Shelf') ?></legend>
         <?php
             echo $this->Form->control('shelf_title');
-            echo $this->Form->control('shelf_height', ['id' => 'shelf_height_input', 'v-model' => 'input_height', 'v-on:change' => 'updateTraysizeList']);
+            echo $this->Form->control('shelf_height', ['id' => 'shelf_height_input']);
             if ($this->request->getQuery('module_id')) {
                 echo $this->Form->control('module_id', ['options' => $modules, 'empty' => true, 'default' => $this->request->getQuery('module_id'), 'readonly' => 'readonly']);
             } else {
@@ -19,48 +19,52 @@
             $this->Form->unlockField('traysize_id');
         ?>
         <div class="input select">
-            <label for="traysize_id">Tray size</label>
-            <select name="traysize_id" form="add_shelf">
-                <option value=""></option>
-                <option v-for="value in cur_traysizes" :value="value.id">{{value.text}}</option>
-            </select>
+
+              <?php echo $this->Form->control('Tray Size',
+  ['type'=>'select',
+   'name' =>'traysize_id',
+   ]);?>
         </div>
         
     </fieldset>
-    <?= $this->Form->end() ?>
-    <?= $this->Form->button(__('Submit'), ['v-on:click' => 'goNext']) ?>
     
+    <?= $this->Form->button(__('Submit')) ?>
+    <?= $this->Form->end() ?>
 </div>
-<script type="text/javascript">
-    new Vue({
-        el: '#app',
-        data: {
-            info: [],
-            statusModel: 2,
-            input_height: 0,
-            traysizes: [],
-            cur_traysizes: [{0:'type in shelf height first'}]
-        },
-        methods: {
-            updateTraysizeList: function(evt) {
-                this.cur_traysizes.length = 0;
-                if (this.traysizes.length != 0) {
-                    for ( i = 0 ; i < this.traysizes.length ; i++) {
-                        if (this.traysizes[i].shelf_height == this.input_height) {
-                            this.cur_traysizes.push({'id':this.traysizes[i]['traysize_id'], 'text': this.traysizes[i]['traysize_option']});
+<script>
+    //Display valid Tray Size options based on the value in the Shelf Height field
+    document.getElementById('shelf_height_input').addEventListener("change", function() {
+       var size = document.getElementById('shelf_height_input').value;
+        var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                //4=Request Done
+                var xhttpRequestReady = 4;
+                if (this.readyState == xhttpRequestReady && this.status == 200) {
+                    //clear the Tray Size field
+                    var child = document.getElementById('tray-size').lastElementChild;  
+                    while (child) { 
+                    document.getElementById('tray-size').removeChild(child); 
+                    child = document.getElementById('tray-size').lastElementChild; 
+                    } 
+                    //the traysize/shelf-height mappings 
+                    var response= JSON.parse(this.responseText);
+                    //create Tray Size dropdown choices 
+                    for (i=0;i<response.length;i++){
+                        //if the shelf height matches
+                        if (response[i].shelf_height==size){
+                            //create dropdown options with the corresponding tray letters
+                            var option = document.createElement('option');
+                            var attribute = document.createAttribute("value");
+                            attribute.value=response[i].tray_category;
+                            option.setAttributeNode(attribute);
+                            document.getElementById('tray-size').appendChild(option).innerHTML=response[i].tray_category;                                    
                         }
                     }
                 }
-            },
-            goNext: function(e) {
-                this.$refs.form.submit();
             }
-        },
-        mounted () {
-            axios
-              .get('<?=  $this->Url->build(["controller" => "Traysizes",
-                                            "action" => "listAllTraysizes"]); ?>')
-              .then(response => (this.traysizes = response['data']))
-        }
-    })
+            //send the request
+            xhttp.open("GET", '<?=  $this->Url->build(["controller" => "Traysizes","action" => "listAllTraysizes"]); ?>');
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.send();                    
+    });
 </script>
