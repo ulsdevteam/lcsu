@@ -55,7 +55,7 @@
                             //create dropdown options with the corresponding tray letters
                             var option = document.createElement('option');
                             var attribute = document.createAttribute("value");
-                            attribute.value=response[i].tray_category;
+                            attribute.value=response[i].traysize_id;
                             option.setAttributeNode(attribute);
                             document.getElementById('tray-size').appendChild(option).innerHTML=response[i].tray_category;                                    
                         }
