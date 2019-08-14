@@ -8,10 +8,11 @@
     <?= $this->Form->create($shelf, ['id' => 'edit_shelf']) ?>
     <fieldset>
         <legend><?= __('Edit Shelf') ?></legend>
+        <h2><?= $shelf->module->module_title.'-'.$shelf->shelf_barcode ?></h2>
         <?php
-            echo $this->Form->control('shelf_title');
+            echo $this->Form->hidden('shelf_title');
             echo $this->Form->control('shelf_height', ['id' => 'shelf_height_input', 'v-model' => 'input_height', 'v-on:change' => 'updateTraysizeList']);
-            echo $this->Form->control('module_id');
+            echo $this->Form->hidden('module_id');
             $this->Form->unlockField('traysize_id');
         ?>
         <label for="traysize_id">Tray size</label>
@@ -51,9 +52,9 @@
                                             'action' => 'listAllTraysizes']); ?>")
               .then((response)=>{
                   this.traysizes = response['data'];
-                  this.input_height = "<?php echo $shelf->shelf_height;?>";
+                  this.input_height = "<?php echo $shelf->shelf_height ? $shelf->shelf_height : 0;?>";
                   this.updateTraysizeList();
-                  this.selectTraysizeId = <?php echo $shelf->traysize_id; ?>;
+                  this.selectTraysizeId = <?php echo $shelf->traysize_id ? $shelf->traysize_id : 0; ?>;
               });
         }
     });

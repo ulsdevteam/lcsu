@@ -8,7 +8,6 @@
     <?php 
         $perm = $cur_user['permission_id'];
         echo $this->Html->link(__('Print'), ['action' => 'printLabel', $tray->tray_id], ['class'=>'func-btn tooltips', 'title' => 'Print this tray barcode']); 
-        if ($perm == 1) echo $this->Html->link( __('Edit'), ['action' => 'edit', $tray->tray_id], ['class' => 'func-btn']);
     ?>
     <!--<p class='func-btn'> | </p>-->
 

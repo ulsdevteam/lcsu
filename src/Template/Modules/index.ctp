@@ -21,8 +21,6 @@
                     <span>|</span>
                     <?= $this->Html->link(__('View'), ['action' => 'view', $module->module_id]) ?>
                     <span>|</span>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $module->module_id]) ?>
-                    <span>|</span>
                     <!-- <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $module->module_id], ['confirm' => __('Are you sure you want to delete # {0}?', $module->module_id)]) ?> -->
                 </td>
             </tr>
