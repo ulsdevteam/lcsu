@@ -11,7 +11,8 @@
         <?php
             echo $this->Form->control('module_title');
             if ($this->request->getQuery('range_id')) {
-                echo $this->Form->control('range_id', ['options'=>$ranges, 'empty' => true, 'default' => $this->request->getQuery('range_id'), 'readonly' => 'readonly']);
+                echo $this->Form->hidden('range_id', ['default' => $this->request->getQuery('range_id')]);
+                echo $this->Form->control('range_location', ['default' => $ranges[$this->request->getQuery('range_id')], 'readonly' => 'readonly']);
             } else {
                 echo $this->Form->control('range_id', ['options'=>$ranges, 'empty' => true]);
             }

@@ -12,7 +12,8 @@
             echo $this->Form->control('shelf_title');
             echo $this->Form->control('shelf_height', ['id' => 'shelf_height_input']);
             if ($this->request->getQuery('module_id')) {
-                echo $this->Form->control('module_id', ['options' => $modules, 'empty' => true, 'default' => $this->request->getQuery('module_id'), 'readonly' => 'readonly']);
+                echo $this->Form->hidden('module_id', ['default' => $this->request->getQuery('module_id')]);
+                echo $this->Form->control('module_location', ['default' => $modules[$this->request->getQuery('module_id')], 'readonly' => 'readonly']);
             } else {
                 echo $this->Form->control('module_id', ['options' => $modules, 'empty' => true]);
             }
