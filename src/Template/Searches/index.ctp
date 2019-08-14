@@ -59,8 +59,6 @@ use Cake\Core\Configure;
                                         echo '<span>|</span>';
                                         echo $this->Html->link(__('View'), ['controller' => 'Trays', 'action' => 'view', $result->tray_id]);
                                         echo '<span>|</span>';
-                                        echo $this->Html->link(__('Edit'), ['controller' => 'Trays', 'action' => 'edit', $result->tray_id]);
-                                        echo '<span>|</span>';
                                         break;
                                 }
                                 echo "</td>";

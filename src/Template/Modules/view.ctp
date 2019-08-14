@@ -7,7 +7,6 @@
 <div class="modules view content">
     <?php
         $perm = $cur_user['permission_id'];
-        if ($perm == 1) echo $this->Html->link(__('Edit'), ['action' => 'edit', $module->module_id], ['class'=>'func-btn']);
     ?>
     <table class="vertical-table">
         <tr>
