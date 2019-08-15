@@ -33,8 +33,10 @@
     <?= $this->Form->end() ?>
 </div>
 <script>
+    window.addEventListener("load", setTrayOptions);
+    document.getElementById('shelf_height_input').addEventListener("change", setTrayOptions);
     //Display valid Tray Size options based on the value in the Shelf Height field
-    document.getElementById('shelf_height_input').addEventListener("change", function() {
+    function setTrayOptions() {
        var size = document.getElementById('shelf_height_input').value;
         var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
@@ -67,5 +69,5 @@
             xhttp.open("GET", '<?=  $this->Url->build(["controller" => "Traysizes","action" => "listAllTraysizes"]); ?>');
             xhttp.setRequestHeader("Content-Type", "application/json");
             xhttp.send();                    
-    });
+    }
 </script>
