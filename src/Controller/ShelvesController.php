@@ -70,6 +70,11 @@ class ShelvesController extends AppController
                 }
             }
             $this->Flash->error(__('The shelf could not be saved. Please, try again.'));
+            foreach ($shelf->getErrors() as $error) {
+                foreach (array_values($error) as $msg) {
+                    $this->Flash->error($msg);
+                }
+            }
         }
         $modules = $this->Shelves->Modules->find('list', ['keyField' => 'module_id','valueField' => 'module_option'])
                                           ->select(['Ranges.range_title', 'Modules.module_id', 'Modules.module_title'])

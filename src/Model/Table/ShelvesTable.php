@@ -5,6 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\ORM\Rule\IsUnique;
 
 /**
  * Shelves Model
@@ -112,6 +113,7 @@ class ShelvesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['traysize_id'], 'Traysizes'));
+        $rules->add($rules->isUnique(['shelf_barcode']));
 
         return $rules;
     }
