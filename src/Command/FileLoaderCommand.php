@@ -123,7 +123,7 @@ class FileLoaderCommand extends Command
                 $segs = explode('-', $tray_barcode);
                 if (!isset($trays[$tray_barcode])) {
                     $shelf_barcode = implode('-', array_slice($segs, 0, 3));
-                    fwrite($sql_file, "INSERT INTO trays (tray_barcode, modified_user, shelf_id, tray_title) SELECT '$tray_barcode', '$user', shelf_id, '$segs[3]' FROM shelves WHERE shelf_barcode = '$shelf_barcode';\n");
+                    fwrite($sql_file, "INSERT INTO trays (tray_barcode, modified_user, shelf_id, tray_title, status_id) SELECT '$tray_barcode', '$user', shelf_id, '$segs[3]', ".Configure::read('Exported')." FROM shelves WHERE shelf_barcode = '$shelf_barcode';\n");
                     $trays[$tray_barcode] = 1;
                 }
                 fwrite($sql_file, "INSERT INTO books (tray_id,book_barcode)  SELECT tray_id, '$row[0]' FROM trays WHERE tray_barcode = '$tray_barcode';\n");
