@@ -32,7 +32,13 @@ use Cake\Core\Configure;
         </tr>
     </table>
 
-    <?= $this->Html->link(__('Print All Tray Label'), ['action' => 'printLabels', $shelf->shelf_id], ['class'=>'func-btn tooltips', 'title' => 'Print all tray labels in this shelf']); ?>
+    <?php
+        if (count($trays)) {
+            echo $this->Html->link(__('Print All Tray Labels'), ['action' => 'printLabels', $shelf->shelf_id], ['class'=>'func-btn tooltips', 'title' => 'Print all tray labels in this shelf']);
+        } elseif (isset($shelf->traysize)) {
+            echo $this->Html->link(__('Allocate trays'), ['action' => 'allocate', $shelf->shelf_id, 'traysize_id' => $shelf->traysize->traysize_id], ['class'=>'func-btn tooltips', 'title' => 'Allocate trays to this shelf']);
+        }
+    ?>
     <div class="index-table">
         <h5 class="page-title">Located trays</h5>
         <table cellpadding="0" cellspacing="0">
