@@ -20,6 +20,7 @@
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('shelf_barcode') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('Traysize.traysize_category', 'Tray Size') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('shelf_height') ?></th>
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
@@ -28,6 +29,7 @@
             <tr>
                 <td><?= h($shelf->shelf_barcode) ?></td>
                 <td><?= h($shelf->traysize ? $shelf->traysize->tray_category : '') ?></td>
+                <td><?= h($shelf->shelf_height) ?></td>
                 <td class="actions">
                     <span>|</span>
                     <?= $this->Html->link(__('View'), ['action' => 'view', $shelf->shelf_id]) ?>
