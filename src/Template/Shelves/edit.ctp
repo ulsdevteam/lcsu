@@ -8,7 +8,7 @@
     <?= $this->Form->create($shelf, ['id' => 'edit_shelf']) ?>
     <fieldset>
         <legend><?= __('Edit Shelf') ?></legend>
-        <h2><?= $shelf->module->module_title.'-'.$shelf->shelf_barcode ?></h2>
+        <h2><?= $shelf->shelf_barcode ?></h2>
         <?php
             echo $this->Form->hidden('shelf_title');
             echo $this->Form->control('shelf_height', ['id' => 'shelf_height_input', 'v-model' => 'input_height', 'v-on:change' => 'updateTraysizeList']);
