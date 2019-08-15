@@ -202,7 +202,7 @@ class ShelvesController extends AppController
         } else {
             $traysize = $this->Shelves->Traysizes->find('all')->first();
         }
-        $shelves = $this->paginate($this->Shelves->find('all')->where(['shelf_height' => $traysize->shelf_height])->notMatching('Trays'));
+        $shelves = $this->paginate($this->Shelves->find()->contain(['Traysizes'])->where(['Shelves.shelf_height' => $traysize->shelf_height, 'Shelves.tray_category' => $traysize->tray_category])->notMatching('Trays'));
         $this->set(compact('traysizes', 'shelves', 'traysize'));
     }
     
