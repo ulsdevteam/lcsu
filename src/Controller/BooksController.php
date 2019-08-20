@@ -81,6 +81,7 @@ class BooksController extends AppController
                         }
                     }
                 } else {
+                    $this->Flash->error(__('The book could not be saved. Please, try again.'));
                     // Prevent to insert the book in database.
                     return $this->redirect(['action' => 'scan',
                                             'tray_id' => $book['tray_id'],
@@ -90,7 +91,6 @@ class BooksController extends AppController
                                             'block_item' => $book->book_barcode]);
                 }
             }
-            $this->Flash->error(__('The book could not be saved. Please, try again.'));
         }
         $this->set(compact('book'));
     }
