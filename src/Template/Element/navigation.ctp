@@ -19,7 +19,7 @@ font-weight: bold;
                                       'Next Available Shelf' => ['controllers' => ['Shelves'], 'action' => ['findAvailable']]],
                      'SCANNING' => ['Scan a Tray' => ['controllers' => ['Trays', 'Books'], 'action' => ['scanInit', 'scan']],
                                     'Verify Trays' => ['controllers' => ['Trays', 'Books'], 'action' => ['index', 'scan-list'], 'filter' => 'validate'],
-                                    'Review Incompleted Trays' => ['controllers' => ['Trays', 'Books'], 'action' => ['index', 'scan'], 'filter' => 'incompleted']
+                                    'Fill New Trays' => ['controllers' => ['Trays', 'Books'], 'action' => ['index', 'scan'], 'filter' => 'incompleted']
                                                                  ]];
             if (isset($cur_user) && $cur_user['permission_id'] == Configure::read('Managers')) {
                 $objs['MANAGEMENT']['Users'] =  ['controllers' => ['Users'], 'action' => $actions];

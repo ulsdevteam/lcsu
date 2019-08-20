@@ -10,7 +10,7 @@
     <fieldset>
         <legend><?= __('Validate Tray') ?></legend>
         <?php
-            echo $this->Form->control('num_books', ['label'=>'The amount of books in this tray', 'autofocus' => 'autofocus', 'v-model' => 'input_amount']);
+            echo $this->Form->control('num_books', ['label'=>'The number of books in this tray', 'autofocus' => 'autofocus', 'v-model' => 'input_amount']);
             echo $this->Form->control('tray_barcode', ['value' => '', 'placeholder' => $tray->tray_barcode, 'v-model' => 'input_tray', 'v-on:keyup.13'=> 'goNext']);
         ?>
     </fieldset>
@@ -33,7 +33,7 @@
                     if (this.book_amount == this.input_amount) {
                          this.$refs.form.submit();
                     } else {
-                        if (confirm("The amount of the books doesn't match the amount in database, do you want to Re-register this tray again?")) {
+                        if (confirm("The number of the books doesn't match the number in database, do you want to restart this tray from scratch?")) {
                             this.$refs.form.submit();
                         }
                     }

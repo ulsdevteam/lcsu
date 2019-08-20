@@ -9,7 +9,7 @@
     <fieldset>
         <legend><?= __('Add Tray') ?></legend>
         <?php
-            echo $this->Form->control('num_books', ['label'=>'The amount of books in this tray', 'autofocus' => 'autofocus']);
+            echo $this->Form->control('num_books', ['label'=>'The number of books in this tray', 'autofocus' => 'autofocus']);
             echo $this->Form->control('tray_barcode');
         ?>
     </fieldset>

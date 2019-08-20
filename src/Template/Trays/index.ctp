@@ -33,7 +33,7 @@
                             switch ($filter) {
                                 case 'incompleted':
                                     echo '<span>|</span>';
-                                    echo $this->Html->link(__('Review'), ['action' => 'incompleted', $tray->tray_id]);
+                                    echo $this->Html->link(__('Scan'), ['action' => 'incompleted', $tray->tray_id]);
                                     echo '<span>|</span>';
                                     /*echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]);*/
                                     break;
