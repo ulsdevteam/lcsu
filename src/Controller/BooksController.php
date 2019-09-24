@@ -46,52 +46,56 @@ class BooksController extends AppController
     /**
      * Scan method
      *
+     * @var $tray
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function scan()
+    public function scan($tray_id)
     {
-        $book = $this->Books->newEntity();
+        $bookIngest = $this->Books->newEntity();
+        $block_item = null;
+        $tray = $this->Books->Trays->get($tray_id);
+        $count = $this->request->getQuery('count');
+        $progress = $this->Books->find('all')->where(['tray_id' => $tray_id])->count();
+        
         if ($this->request->is('post')) {
-            $tray = $this->Books->Trays->get($this->request->getQuery('tray_id'));
-            $book = $this->Books->patchEntity($book, $this->request->getData());
-            $book->tray_id = $tray->tray_id;
-            $id =  $this->request->getQuery('id');
-            $count = $this->request->getQuery('count');
             if ($tray->status_id == Configure::read('Incompleted')) {
-                $itembarcode = new ItemBarcodeController();
-                $isExist = $itembarcode->search($book->book_barcode);
-                if ($isExist) {
-                    if ($this->Books->save($book)) {
-                        $this->Flash->success(__('The book has been saved.'));
-
-                        if ($id + 1 > $count) {
-                            // Wrap up the process
-                            return $this->redirect(['controller' => 'trays',
-                                                    'action' => 'scanEnd',
-                                                    $book['tray_id'],
-                                                    'source' => $this->request->getQuery('source'),
-                                                    'count' => $count]);
-                        } else {
-                            // Keep to scanning the next book
-                            return $this->redirect(['action' => 'scan',
-                                                    'tray_id' => $book['tray_id'],
-                                                    'source' => $this->request->getQuery('source'),
-                                                    'count' => $count,
-                                                    'id' => $id+1]);
+                $bookIngest = $this->Books->patchEntity($bookIngest, $this->request->getData());
+                if ($bookIngest->getErrors()) {
+                    foreach ($bookIngest->getErrors()as $error) {
+                        foreach ($error as $key => $msg) {
+                            if ($key === 'unique') {
+                                $this->Flash->error(__('This book has already been added.'));
+                            } else {
+                                $this->Flash->error($msg);
+                            }
                         }
                     }
                 } else {
-                    $this->Flash->error(__('The book could not be saved. Please, try again.'));
-                    // Prevent to insert the book in database.
-                    return $this->redirect(['action' => 'scan',
-                                            'tray_id' => $book['tray_id'],
-                                            'source' => $this->request->getQuery('source'),
-                                            'count' => $count,
-                                            'id' => $id,
-                                            'block_item' => $book->book_barcode]);
+                    $itembarcode = $this->loadModel('ItemBarcode');
+                    $isExist = $itembarcode->find('all')->where(['ITEM_BARCODE' => $bookIngest->book_barcode, 'BARCODE_STATUS' => 1])->count();
+                    if ($isExist) {
+                        if ($this->Books->save($bookIngest)) {
+                            $this->Flash->success(__('The book has been saved.'));
+
+                            $progress = $this->Books->find('all')->where(['tray_id' => $tray_id])->count();
+                            if ($progress == $count) {
+                                // Wrap up the process
+                                return $this->redirect(['controller' => 'trays',
+                                                        'action' => 'scanEnd',
+                                                        $bookIngest['tray_id'],
+                                                        'source' => $this->request->getQuery('source'),
+                                                        'count' => $count]);
+                            }
+                        }
+                    } else {
+                        $this->Flash->error(__('This item is already in Voyager!'));
+                        $block_item = $bookIngest->book_barcode;
+                    }
                 }
             }
         }
-        $this->set(compact('book'));
+        $book = $this->Books->newEntity();
+        $progress = $progress + 1;
+        $this->set(compact('book', 'block_item', 'tray_id', 'progress'));
     }
 }

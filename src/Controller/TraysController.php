@@ -142,27 +142,36 @@ class TraysController extends AppController
 
     /**
      * ScanInit method
-     *
+     * @var $tray_id Optional tray id
      * @return \Cake\Http\Response|null Redirects to index.
      */
-     public function scanInit()
+     public function scanInit($tray_id = null)
      {
-         $tray = $this->Trays->newEntity();
-         if ($this->request->is('post')) {
-             $tray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
-             if (!isset($tray)) {
+        if ($tray_id) {
+            // Allow uncaught 404 on lookup failure
+            $tray = $this->Trays->get($tray_id);
+        } else {
+            $tray = $this->Trays->newEntity();
+        }
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $tray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
+            if (!isset($tray)) {
                 $this->Flash->error(__('The tray is not in the database.'));
+            } else if ($tray->status_id != Configure::read('Incompleted')) {
+                $this->Flash->error(__('The tray is already in process. Please, try a different tray.'));
             } else {
                 $tray->modified_user = $this->Auth->user('username');
+                
+                $this->Trays->Books->deleteAll(['tray_id' => $tray->tray_id]);
+
                 if ($this->Trays->save($tray)) {
 
                     $this->Flash->success(__('The tray has been saved.'));
 
                     return $this->redirect(['controller' => 'books',
                                             'action' => 'scan',
-                                            'tray_id' => $tray->tray_id,
                                             'count' => $this->request->getData()['num_books'],
-                                            'id' => 1]);
+                                            $tray->tray_id]);
                 }
                 $this->Flash->error(__('The tray could not be saved. Please, try again.'));
             }
@@ -174,25 +183,28 @@ class TraysController extends AppController
      * ScanEnd method
      *
      * @param $id string Tray id
-     * 
      * @return \Cake\Http\Response|null Redirects to index.
      */
-    public function scanEnd($id = null) 
+    public function scanEnd($id) 
     {
         $tray = $this->Trays->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $tray = $this->Trays->patchEntity($tray, $this->request->getData());
-            $num_books = $this->Trays->Books->find('all', ['limit' => 200])
-                    ->where(['tray_id' => $id])->count();
-            if ($num_books != intval($this->request->getQuery('count'))) {
-                $this->Flash->error(__('The tray barcode or the amount of books is wrong.'));
+            if ($tray->tray_barcode !== $this->request->getData('tray_barcode')) {
+                $this->Flash->error(__('The tray barcode does not match.'));
+            } else {
+                $tray = $this->Trays->patchEntity($tray, $this->request->getData());
+                $num_books = $this->Trays->Books->find('all', ['limit' => 200])
+                        ->where(['tray_id' => $id])->count();
+                if ($num_books != intval($this->request->getQuery('count'))) {
+                    $this->Flash->error(__('The tray barcode or the amount of books is wrong.'));
+                }
+                $tray->status_id = intval($tray->status_id) + 1;
+                $tray->modified_user = $this->Auth->user('username');
+                if ($this->Trays->save($tray)) {
+                    return $this->redirectScanInit($tray);
+                }
+                $this->Flash->error(__('Fail to wrap up this tray.'));
             }
-            $tray->status_id = intval($tray->status_id) + 1;
-            $tray->modified_user = $this->Auth->user('username');
-            if ($this->Trays->save($tray)) {
-                return $this->redirectScanInit($tray);
-            }
-            $this->Flash->error(__('Fail to wrap up this tray.'));
         }
         $this->set(compact('tray'));
     }
@@ -222,7 +234,7 @@ class TraysController extends AppController
 
     /**
      * ScanInit method
-     *
+     * TODO: move delete logic into scan-init
      * @return \Cake\Http\Response|null Redirects to index with filter incompleted.
      */
     public function incompleted($id = null) 
