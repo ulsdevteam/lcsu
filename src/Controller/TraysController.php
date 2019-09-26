@@ -23,7 +23,7 @@ class TraysController extends AppController
     {
         $this->paginate = [
             'contain' => ['Status'],
-            'order' => ['Trays.tray_barcode' => 'ASC']
+            'order' => ['Trays.modified' => 'DESC']
         ];
 
         $filter = $this->request->getQuery('filter');
@@ -35,7 +35,7 @@ class TraysController extends AppController
                 $this->set('trays', $this->paginate($this->Trays->find('all')->where(['Trays.status_id' => Configure::read('Validate')])));
                 break;
             default:
-                $this->set('trays', $this->paginate( $this->Trays));
+                $this->set('trays', $this->paginate($this->Trays));
                 break;
         }
     }
