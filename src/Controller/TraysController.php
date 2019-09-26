@@ -192,7 +192,6 @@ class TraysController extends AppController
             if ($tray->tray_barcode !== $this->request->getData('tray_barcode')) {
                 $this->Flash->error(__('The tray barcode does not match.'));
             } else {
-                $tray = $this->Trays->patchEntity($tray, $this->request->getData());
                 $num_books = $this->Trays->Books->find('all', ['limit' => 200])
                         ->where(['tray_id' => $id])->count();
                 if ($num_books != intval($this->request->getQuery('count'))) {
