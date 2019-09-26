@@ -147,6 +147,7 @@ class TraysController extends AppController
      */
      public function scanInit($tray_id = null)
      {
+         $progress = $this->Trays->books->find('all')->where(['tray_id' => $tray_id])->count();
         if ($tray_id) {
             // Allow uncaught 404 on lookup failure
             $tray = $this->Trays->get($tray_id);
@@ -154,6 +155,7 @@ class TraysController extends AppController
             $tray = $this->Trays->newEntity();
         }
         if ($this->request->is('post') || $this->request->is('put')) {
+            echo "progess: ".$progress."   num: ". $this->request->getData('num_books');
             $tray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
             if (!isset($tray)) {
                 $this->Flash->error(__('The tray is not in the database.'));
@@ -161,22 +163,29 @@ class TraysController extends AppController
                 $this->Flash->error(__('The tray is already in process. Please, try a different tray.'));
             } else {
                 $tray->modified_user = $this->Auth->user('username');
-                
-                $this->Trays->Books->deleteAll(['tray_id' => $tray->tray_id]);
+                if($this->request->getData('is_restart')){
+                    $this->Trays->Books->deleteAll(['tray_id' => $tray->tray_id]);
+                }
 
                 if ($this->Trays->save($tray)) {
-
                     $this->Flash->success(__('The tray has been saved.'));
-
-                    return $this->redirect(['controller' => 'books',
+                    if ($progress == $this->request->getData('num_books') && !$this->request->getData('is_restart')) {
+                        // Wrap up the process
+                        return $this->redirect(['controller' => 'trays',
+                                                'action' => 'scanEnd',
+                                                $tray_id,
+                                                'count' => $progress]);
+                    } else {
+                        return $this->redirect(['controller' => 'books',
                                             'action' => 'scan',
                                             'count' => $this->request->getData()['num_books'],
                                             $tray->tray_id]);
+                    }
                 }
                 $this->Flash->error(__('The tray could not be saved. Please, try again.'));
             }
          }
-         $this->set(compact('tray'));
+         $this->set(compact('tray', 'progress'));
     }
 
     /**

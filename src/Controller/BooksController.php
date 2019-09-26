@@ -83,9 +83,10 @@ class BooksController extends AppController
                                 return $this->redirect(['controller' => 'trays',
                                                         'action' => 'scanEnd',
                                                         $bookIngest['tray_id'],
-                                                        'source' => $this->request->getQuery('source'),
                                                         'count' => $count]);
                             }
+                        } else {
+                            $this->Flash->error(__('The book could not be saved. Please, try again.'));
                         }
                     } else {
                         $this->Flash->error(__('This item is already in Voyager!'));
