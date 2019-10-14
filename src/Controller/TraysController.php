@@ -261,10 +261,10 @@ class TraysController extends AppController
                 $this->Flash->success(__('The books in the tray are been removed.'));
                 return $this->redirect(['controller' => 'books',
                             'action' => 'scan',
-                            'tray_id' => $tray->tray_id,
                             'count' => $this->request->getData('num_books'),
                             'source' => 'incompleted',
-                            'id' => 1]);
+                            'id' => 1,
+                            $tray->tray_id]);
             }
             $this->Flash->error(__('Please, try again.'));
         }
@@ -291,9 +291,9 @@ class TraysController extends AppController
                 if ($this->Trays->save($tray)) {
                     return $this->redirect(['controller' => 'books',
                                 'action' => 'scan',
-                                'tray_id' => $tray->tray_id,
                                 'count' => $this->request->getData('num_books'),
-                                'id' => 1]);
+                                'id' => 1,
+                                $tray->tray_id]);
                 }
             } else if ($tray->tray_barcode != $this->request->getData('tray_barcode')) {
                 $this->Flash->error(__("The tray barcode doesn't match."));
