@@ -1,21 +1,21 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\ItemTable;
+use App\Model\Table\ItemStatusTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\ItemTable Test Case
+ * App\Model\Table\ItemStatusTable Test Case
  */
-class ItemTableTest extends TestCase
+class ItemStatusTableTest extends TestCase
 {
     /**
      * Test subject
      *
-     * @var \App\Model\Table\ItemTable
+     * @var \App\Model\Table\ItemStatusTable
      */
-    public $Item;
+    public $ItemStatus;
 
     /**
      * Fixtures
@@ -23,7 +23,7 @@ class ItemTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.Item'
+        'app.ItemStatus'
     ];
 
     /**
@@ -34,8 +34,8 @@ class ItemTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('Item') ? [] : ['className' => ItemTable::class];
-        $this->Item = TableRegistry::getTableLocator()->get('Item', $config);
+        $config = TableRegistry::getTableLocator()->exists('ItemStatus') ? [] : ['className' => ItemStatusTable::class];
+        $this->ItemStatus = TableRegistry::getTableLocator()->get('ItemStatus', $config);
     }
 
     /**
@@ -45,7 +45,7 @@ class ItemTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->Item);
+        unset($this->ItemStatus);
 
         parent::tearDown();
     }
@@ -66,16 +66,6 @@ class ItemTableTest extends TestCase
      * @return void
      */
     public function testValidationDefault()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test buildRules method
-     *
-     * @return void
-     */
-    public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

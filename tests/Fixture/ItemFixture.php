@@ -13,7 +13,7 @@ class ItemFixture extends TestFixture
      *
      * @var string
      */
-    public $table = 'ITEM';
+    public $table = 'item';
     /**
      * Fields
      *
@@ -81,8 +81,8 @@ class ItemFixture extends TestFixture
                 'HISTORICAL_BROWSES' => 1,
                 'RECALLS_PLACED' => 1,
                 'HOLDS_PLACED' => 1,
-                'CREATE_DATE' => '2019-04-17 20:40:45',
-                'MODIFY_DATE' => '2019-04-17 20:40:45',
+                'CREATE_DATE' => '2019-10-14 16:42:42',
+                'MODIFY_DATE' => '2019-10-14 16:42:42',
                 'CREATE_OPERATOR_ID' => 'Lorem ip',
                 'MODIFY_OPERATOR_ID' => 'Lorem ip',
                 'CREATE_LOCATION_ID' => 1,
