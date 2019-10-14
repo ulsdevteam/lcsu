@@ -201,7 +201,7 @@ class TraysController extends AppController
             if ($tray->tray_barcode !== $this->request->getData('tray_barcode')) {
                 $this->Flash->error(__('The tray barcode does not match.'));
             } else {
-                $num_books = $this->Trays->Books->find('all', ['limit' => 200])
+                $num_books = $this->Trays->Books->find('all')
                         ->where(['tray_id' => $id])->count();
                 if ($num_books != intval($this->request->getQuery('count'))) {
                     $this->Flash->error(__('The tray barcode or the amount of books is wrong.'));
@@ -251,7 +251,7 @@ class TraysController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $tray = $this->Trays->patchEntity($tray, $this->request->getData());
             $tray->modified_user = $this->Auth->user('username');
-            $count_books = $this->Trays->Books->find('all', ['limit' => 200])
+            $count_books = $this->Trays->Books->find('all')
                     ->where(['tray_id' => $id])->count();
             if ($count_books > 0) {
                 $this->Trays->Books->deleteAll(['tray_id' => $tray->tray_id]);
@@ -281,7 +281,7 @@ class TraysController extends AppController
             $this->Flash->error(__('This tray cannot be validated.'));
             return $this->redirect(['action' => 'index', 'filter' => 'validate']);
         }
-        $count_books = $this->Trays->Books->find('all', ['limit' => 200])
+        $count_books = $this->Trays->Books->find('all')
                 ->where(['tray_id' => $id])->count();
         if ($this->request->is(['patch', 'post', 'put'])) {
             if ($count_books != $this->request->getData('num_books')) {
@@ -319,7 +319,7 @@ class TraysController extends AppController
             $this->Flash->error(__('This tray cannot be validated.'));
             return $this->redirect(['action' => 'index', 'filter' => 'validate']);
         }
-        $bookList = $this->Trays->Books->find('all', ['limit' => 200])
+        $bookList = $this->Trays->Books->find('all')
                                         ->where(['tray_id' => $id]);
         $this->set(compact('tray', 'bookList'));
     }

@@ -81,8 +81,7 @@ class ShelvesController extends AppController
                                           ->contain(['Ranges']);
         $modules = $modules->toArray();
         $traysizes = $this->Shelves->Traysizes->find('list',
-                                                    ['keyField' => 'traysize_id','valueField' => 'traysize_option',
-                                                    'limit' => 200]);
+                                                    ['keyField' => 'traysize_id','valueField' => 'traysize_option']);
         $this->set(compact('shelf', 'modules', 'traysizes'));
     }
 
@@ -111,8 +110,7 @@ class ShelvesController extends AppController
                                           ->contain(['Ranges']);
         $modules = $modules->toArray();
         $traysizes = $this->Shelves->Traysizes->find('list',
-                                                    ['keyField' => 'traysize_id','valueField' => 'traysize_option',
-                                                    'limit' => 200]);
+                                                    ['keyField' => 'traysize_id','valueField' => 'traysize_option']);
         $this->set(compact('shelf', 'modules', 'traysizes'));
     }
 
@@ -200,8 +198,7 @@ class ShelvesController extends AppController
     public function findAvailable()
     {
         $traysizes = $this->Shelves->Traysizes->find('list',
-                                                    ['keyField' => 'traysize_id','valueField' => 'traysize_option',
-                                                    'limit' => 200]);
+                                                    ['keyField' => 'traysize_id','valueField' => 'traysize_option']);
         if ($this->request->getQuery('traysizes')) {
             $traysize = $this->Shelves->Traysizes->get( $this->request->getQuery('traysizes'));
         } else {
