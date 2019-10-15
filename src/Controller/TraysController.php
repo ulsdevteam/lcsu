@@ -209,7 +209,7 @@ class TraysController extends AppController
                 }
                 $tray->status_id = intval($tray->status_id) + 1;
                 $tray->modified_user = $this->Auth->user('username');
-                if ($tray->status_id == Configure::read('Validate')) {
+                if ($tray->status_id == Configure::read('Completed')) {
                     $tray->validated_user = $tray->modified_user;
                     $tray->validated_date = Time::now();
                 }
