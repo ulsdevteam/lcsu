@@ -61,6 +61,8 @@ use Cake\Core\Configure;
                     <td><?= h($tray->modified) ?></td>
                     <td><?= h($tray->modified_user) ?></td>
                     <td class="actions">
+		        <span>|</span>
+		        <?= $this->Html->link(__('Check Inventory'), ['controller' => 'Trays', 'action' => 'shelflist', $tray->tray_id]); ?>
                         <span>|</span>
                         <?= $this->Html->link(__('View'), ['controller' => 'Trays', 'action' => 'view', $tray->tray_id]) ?>
                         <span>|<span>

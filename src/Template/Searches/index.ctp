@@ -57,6 +57,8 @@ use Cake\Core\Configure;
                                         break;
                                     default:
                                         echo '<span>|</span>';
+                                        echo $this->Html->link(__('Check Inventory'), ['controller' => 'Trays', 'action' => 'shelflist', $result->tray_id]);
+                                        echo '<span>|</span>';
                                         echo $this->Html->link(__('View'), ['controller' => 'Trays', 'action' => 'view', $result->tray_id]);
                                         echo '<span>|</span>';
                                         break;

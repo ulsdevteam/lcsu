@@ -33,6 +33,11 @@
             <th scope="row"><?= __('Modified') ?></th>
             <td><?= h($tray->modified) ?></td>
         </tr>
+        <tr>
+            <th scope="row"><?= __('Inventory Checked') ?></th>
+            <td><?= $tray->validated_date ? h($tray->validated_user) . ' ' . h($tray->validated_date) : $this->Html->link(__('Check Inventory'), ['action' => 'shelflist', $tray->tray_id]) ?></td>
+        </tr>
+
     </table>
 
     <div class="child-table">

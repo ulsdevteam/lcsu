@@ -30,10 +30,18 @@ class ItemStatusTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('item_status');
+        $this->setTable('ITEM_STATUS');
+        $this->setAlias('ITS');
         
         $this->belongsTo('Item', [
             'foreignKey' => 'ITEM_ID',
+            'joinType' => 'INNER',
+            'joinTable' => 'ITEM'
+        ]);
+
+         $this->hasOne('ItemStatusType', [
+            'foreignKey' => 'ITEM_STATUS_TYPE',
+            'bindingKey' => 'ITEM_STATUS',
             'joinType' => 'INNER',
             'joinTable' => 'ITEM'
         ]);

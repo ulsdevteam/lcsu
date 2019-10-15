@@ -46,6 +46,8 @@
                                     break;
                                 default:
                                     echo '<span>|</span>';
+                                    echo $this->Html->link(__('Check Inventory'), ['action' => 'shelflist', $tray->tray_id]);
+                                    echo '<span>|</span>';
                                     echo $this->Html->link(__('View'), ['action' => 'view', $tray->tray_id]);
                                     echo '<span>|</span>';
                                     echo $this->Html->link(__('Edit'), ['action' => 'edit', $tray->tray_id]);

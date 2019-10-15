@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\Routing\Router;
 use App\Utility\PhpNetworkLprPrinter;
 use Cake\Core\Configure;
+use Cake\I18n\Time;
 /**
  * Trays Controller
  *
@@ -208,6 +209,10 @@ class TraysController extends AppController
                 }
                 $tray->status_id = intval($tray->status_id) + 1;
                 $tray->modified_user = $this->Auth->user('username');
+                if ($tray->status_id == Configure::read('Validate')) {
+                    $tray->validated_user = $tray->modified_user;
+                    $tray->validated_date = Time::now();
+                }
                 if ($this->Trays->save($tray)) {
                     return $this->redirectScanInit($tray);
                 }
@@ -305,6 +310,74 @@ class TraysController extends AppController
         }
         $amount = $count_books;
         $this->set(compact('tray', 'amount'));
+    }
+
+    /**
+     * Shelf list: display a list of items for a tray, including item status
+     * Allow the user to scan the items to verify tray contents
+     * @var $id Tray ID or Barcode
+     */
+    public function shelflist($id = null) 
+    {
+        $this->request->allowMethod(['get', 'post']);
+        if (preg_match('/^R[0-9]{2}-M[0-9]{2}-S[0-9]{2}-T[0-9]{2}$/', $id)) {
+            $tray = $this->Trays->find()->where(['tray_barcode' => $id])->first();
+            $id = $tray->tray_id;
+        } else {
+            $tray = $this->Trays->get($id);
+        }
+        $session = $this->request->getSession();
+        $inventory = $session->read('validate');
+        if (!$inventory) {
+            $inventory = array();
+        }
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $token = NULL;
+            if (isset($inventory[$id])) {
+                $token = $inventory[$id];
+                unset($inventory[$id]);
+            }
+            $session->write('validate', $inventory);
+            if ($token && $token > time()) {
+                $tray->validated_user = $this->Auth->user('username');
+                $tray->validated_date = Time::now();
+                if ($savedTray = $this->Trays->save($tray)) {
+                    $this->Flash->success(__('Tray inventory marked as verified'));
+                    $this->render('scanTray');
+                    return;
+                }
+            }
+            $this->Flash->error('Invalid or expired inventory check.  Please retry.');
+        }
+        $count_books = $this->Trays->Books->find('all')
+                ->where(['tray_id' => $id])->count();
+        $this->loadModel('ItemBarcode');
+        $this->loadModel('ItemStatus');
+        $bookList = $this->Trays->Books->find('all')->where(['tray_id' => $id]);
+        foreach ($bookList as $book) {
+            $item = $this->ItemBarcode->find('all')->where(['ITEM_BARCODE' => $book->book_barcode, 'BARCODE_STATUS' => 1]);
+            $item_id = null;
+            foreach ($item as $rs) { 
+                $item_id = $rs->ITEM_ID;
+            }
+            $itemStatus = $this->ItemStatus->find('all')->where(['ITEM_ID' => $item_id]);
+            // using Cake's contain method to join formulates a column name too long for Oracle
+            $itemStatus->join(['table' => 'ITEM_STATUS_TYPE', 'alias' => 'IST', 'type' => 'LEFT', 'conditions' => 'IST.ITEM_STATUS_TYPE = ITS.ITEM_STATUS']);
+            // not sure why I can't call this function directly
+            //$itemStatus->select(['statuses' => $item->func()->coalesce('IST.ITEM_STATUS_DESC')]);
+            $itemStatus->select(['status' => 'IST.ITEM_STATUS_DESC']);
+            $coalesced = '';
+            foreach ($itemStatus as $s) {
+                $coalesced .= $coalesced ? ',' : '';
+                $coalesced .= $s->status;
+            }
+            $book->statuses = $coalesced;
+        }
+        $amount = $count_books;
+        $this->set(compact('tray', 'amount', 'bookList'));
+        // this expires in 5 minutes
+        $inventory[$id] = time() + 300;
+        $session->write('validate', $inventory);
     }
 
     /**

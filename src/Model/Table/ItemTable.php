@@ -30,7 +30,20 @@ class ItemTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('item');
+        $this->setTable('ITEM');
+
+        $this->hasMany('ItemStatus', [
+            'foreignKey' => 'ITEM_ID',
+            'joinType' => 'INNER',
+            'joinTable' => 'ITEM_STATUS'
+        ]);
+ 
+        $this->hasMany('ItemBarcode', [
+            'foreignKey' => 'ITEM_ID',
+            'joinType' => 'INNER',
+            'joinTable' => 'ITEM_BARCODE'
+        ]);
+
     }
 
     /**

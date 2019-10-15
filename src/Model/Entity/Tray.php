@@ -35,5 +35,7 @@ class Tray extends Entity
         'tray_title' => true,
         'tray_id' => true,
         'status_id' => true,
+        'validated_user' => true,
+        'validated_date' => true,
     ];
 }
