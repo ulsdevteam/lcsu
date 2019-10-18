@@ -31,7 +31,9 @@
         data: {
             bookList: [],
             input:"",
-            count:0
+            count:0,
+            checkedFlag: 'Checked',
+            uncheckedFlag: 'Unchecked'
         },
         methods: {
             checkBook() {
@@ -39,7 +41,7 @@
                     var flag = false;
                     for (var i = 0; i < this.bookList.length; i++) {
                         if(this.bookList[i]['book_barcode'] == this.input) {
-                            if(this.bookList[i]['status'] == 'Uncheck') {
+                            if(this.bookList[i]['status'] == this.uncheckedFlag) {
                                 this.count++;
                                 if (this.count == this.bookList.length) {
                                     window.location = "<?= $this->Url->build([
@@ -53,7 +55,7 @@
                                                         ], ['escape' => false])?>";
                                 }
                             }
-                            this.bookList[i]['status'] = 'Checked';
+                            this.bookList[i]['status'] = this.checkedFlag;
                             flag = true;
                         }
                     }
@@ -70,7 +72,7 @@
             this.$refs.input_barcode.focus();
             $data = <?php echo json_encode($bookList);?>;
             for (var i = 0; i <$data.length; i++) {
-                this.bookList.push({'book_barcode': $data[i]['book_barcode'], 'status': 'Unchecked'});
+                this.bookList.push({'book_barcode': $data[i]['book_barcode'], 'status': this.uncheckedFlag});
             }
         }
     })
