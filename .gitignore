@@ -41,3 +41,6 @@ nbproject/*
 
 # Remote-sync for atom
 .remote-sync.json
+
+# Composer
+composer.lock
