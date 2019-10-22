@@ -8,6 +8,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Filesystem\Folder;
 use Cake\Filesystem\File;
+use Cake\Core\Configure;
 
 /**
  * Simple console wrapper around Psy\Shell.
@@ -107,7 +108,7 @@ class FileLoaderCommand extends Command
     public function loadTrays($input, $io)
     {
         $trays = [];
-        $sql_filename = "tmp/insert-".date('Y-m-d_H-i-s').".sql";
+        $sql_filename = "/tmp/insert-".date('Y-m-d').".sql";
         $sql_file = fopen($sql_filename, "w");
 
         $time_start = microtime(true);
