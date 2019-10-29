@@ -76,6 +76,12 @@
             var id = currentUrl.split('/').slice(-1)[0];
             this.tray_id = ( isNaN(id) || id.length == 0) ?  null : id;
             this.progress = "<?php echo $progress?>";
+            console.log("rewre");
+//            window.addEventListener('keyup', function(event) {
+//                if (event.keyCode === 13) { 
+//                  this.goNext();
+//                }
+//            });
         }
     })
 </script>
