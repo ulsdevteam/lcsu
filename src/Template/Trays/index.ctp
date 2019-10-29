@@ -38,6 +38,7 @@
                                     /*echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]);*/
                                     break;
                                 case 'validate':
+                                    // disabling self validation
                                     if ($tray->modified_user != $cur_user['username']) {
                                         echo '<span>|</span>';
                                         echo $this->Html->link(__('Validate'), ['action' => 'validate', $tray->tray_id]);
@@ -51,6 +52,8 @@
                                     echo $this->Html->link(__('View'), ['action' => 'view', $tray->tray_id]);
                                     echo '<span>|</span>';
                                     echo $this->Html->link(__('Edit'), ['action' => 'edit', $tray->tray_id]);
+                                    echo '<span>|</span>';
+                                    echo $this->Html->link(__('Add Items'), ['action' => 'addOne', $tray->tray_id]);
                                     echo '<span>|</span>';
                                     //echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $tray->tray_id], ['confirm' => __('Are you sure you want to delete # {0}?', $tray->tray_id)]);
                                     break;
