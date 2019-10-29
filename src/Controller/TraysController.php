@@ -147,17 +147,33 @@ class TraysController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      */
      public function scanInit($tray_id = null)
-     {
-         $progress = $this->Trays->books->find('all')->where(['tray_id' => $tray_id])->count();
+     { 
+        $progress = $this->Trays->books->find('all')->where(['tray_id' => $tray_id])->count();                   
         if ($tray_id) {
             // Allow uncaught 404 on lookup failure
             $tray = $this->Trays->get($tray_id);
         } else {
             $tray = $this->Trays->newEntity();
         }
-        if ($this->request->is('post') || $this->request->is('put')) {
+        if ($this->request->is('post') || $this->request->is('put')) {            
+        //load the tray object
+         $existingTray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
+         //get the number of books already in the tray
+         $existingProgress = $this->Trays->books->find('all')->where(['tray_id' => $existingTray->tray_id])->count();
+         //Ex: user enters 10, but the tray already contains 10 books
+         if ($existingProgress==$this->request->getData()['num_books']){
+         $this->Flash->error(__(' You entered '.$existingProgress.' but the tray already has '.$this->request->getData()['num_books']. ' items'));
+         //There's nothing to do in this case. Redirect to close out the tray.
+            return $this->redirect(['controller' => 'trays',
+                                                'action' => 'scanEnd',
+                                                $existingTray->tray_id,
+                                                'count' => $existingProgress]);
+         }
+         //otherwise we'll make sure of the tray existence and status
+        else{
             echo "progess: ".$progress."   num: ". $this->request->getData('num_books');
             $tray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
+            
             if (!isset($tray)) {
                 $this->Flash->error(__('The tray is not in the database.'));
             } else if ($tray->status_id != Configure::read('Incompleted')) {
@@ -167,7 +183,6 @@ class TraysController extends AppController
                 if($this->request->getData('is_restart')){
                     $this->Trays->Books->deleteAll(['tray_id' => $tray->tray_id]);
                 }
-
                 if ($this->Trays->save($tray)) {
                     $this->Flash->success(__('The tray has been saved.'));
                     if ($progress == $this->request->getData('num_books') && !$this->request->getData('is_restart')) {
@@ -185,9 +200,10 @@ class TraysController extends AppController
                 }
                 $this->Flash->error(__('The tray could not be saved. Please, try again.'));
             }
-         }
+        }}
          $this->set(compact('tray', 'progress'));
-    }
+     }
+     
 
     /**
      * ScanEnd method
@@ -276,6 +292,26 @@ class TraysController extends AppController
         $this->set(compact('tray'));
     }
 
+    
+    /**
+     * addOne method
+     * @var $tray_id  tray id
+     * @return \Cake\Http\Response|null Redirects to index.
+     */
+    //resets the current tray to Incomplete,
+    //allowing us to redeclare the number of books it contains and scan in any extras
+    public function addOne($tray_id=null){
+        $tray = $this->Trays->get($tray_id);
+        //change the status to incomplete
+        $tray->status_id = 1;//set the status back to incomplete
+        //view the tray to verify that the status was flipped
+        if ($this->Trays->save($tray)) {
+        return $this->redirect(['controller' => 'trays',
+                                            'action' => 'scan-init'
+                                            
+                                            ]);
+        }
+    }
     /**
      *
      */
