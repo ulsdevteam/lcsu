@@ -61,6 +61,9 @@ use Cake\Core\Configure;
                                         echo '<span>|</span>';
                                         echo $this->Html->link(__('View'), ['controller' => 'Trays', 'action' => 'view', $result->tray_id]);
                                         echo '<span>|</span>';
+                                        //this will turn the tray status over to incomplete so that more items can be scanned into it
+                                        echo $this->Html->link(__('Add Items'), ['controller' => 'Trays', 'action' => 'addOne', $result->tray_id]);
+                                        echo '<span>|</span>';
                                         break;
                                 }
                                 echo "</td>";
