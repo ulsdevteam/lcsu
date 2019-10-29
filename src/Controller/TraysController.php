@@ -169,6 +169,9 @@ class TraysController extends AppController
                                                 $existingTray->tray_id,
                                                 'count' => $existingProgress]);
          }
+         else if ($existingProgress > $this->request->getData()['num_books']){
+             $this->Flash->error(__(' You entered '.$this->request->getData()['num_books'].' but the tray already has '.$existingProgress. ' items'));             
+         }
          //otherwise we'll make sure of the tray existence and status
         else{
             echo "progess: ".$progress."   num: ". $this->request->getData('num_books');
