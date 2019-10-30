@@ -155,7 +155,9 @@ class TraysController extends AppController
         } else {
             $tray = $this->Trays->newEntity();
         }
-        if ($this->request->is('post') || $this->request->is('put')) {            
+        if ($this->request->is('post') || $this->request->is('put')) {
+        //when updating a tray:
+        if (!isset($tray)) {
         //load the tray object
          $existingTray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
          //get the number of books already in the tray
@@ -172,6 +174,7 @@ class TraysController extends AppController
          else if ($existingProgress > $this->request->getData()['num_books']){
              $this->Flash->error(__(' You entered '.$this->request->getData()['num_books'].' but the tray already has '.$existingProgress. ' items'));             
          }
+        }
          //otherwise we'll make sure of the tray existence and status
         else{
             echo "progess: ".$progress."   num: ". $this->request->getData('num_books');
