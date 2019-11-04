@@ -6,6 +6,7 @@ use Cake\Routing\Router;
 use App\Utility\PhpNetworkLprPrinter;
 use Cake\Core\Configure;
 use Cake\I18n\Time;
+use \App\Command\ExportCommand;
 /**
  * Trays Controller
  *
@@ -447,20 +448,9 @@ class TraysController extends AppController
      */
     public function export($testonly = false)
     {
-        $trays = $this->Trays->find('all')->contain(['Books'])->where(['Trays.status_id' => Configure::read('Completed')]);
-        $this->Flash->success(json_encode($trays));
-        if ($trays) {
-            $content = '';
-            foreach ($trays as $tray) {
-                foreach ($tray->books as $book) {
-                    $content .= $tray->tray_barcode.' '.date('m/d/Y', strtotime($tray->created))."\t".$book->book_barcode."\t".date('Y/m/d H:i:s', strtotime($tray->created))."\t".'pittlcsu'."\r\n";
-                }
-                if (!$testonly) {
-                    $tray->status_id = Configure::read('Exported');
-                    $this->Trays->save($tray);
-                }
-            }
-        }
+        $cmd = new \App\Command\ExportCommand();
+        $cmd->initialize();
+        $content = $cmd->export($testonly);
         $response = $this->response;
         // Inject string content into response body (3.4.0+)
         $response = $response->withStringBody($content);
