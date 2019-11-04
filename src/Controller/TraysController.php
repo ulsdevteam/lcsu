@@ -149,65 +149,94 @@ class TraysController extends AppController
      */
      public function scanInit($tray_id = null)
      { 
-        $progress = $this->Trays->books->find('all')->where(['tray_id' => $tray_id])->count();                   
+        //determine which tray value to send to the template
         if ($tray_id) {
             // Allow uncaught 404 on lookup failure
             $tray = $this->Trays->get($tray_id);
         } else {
             $tray = $this->Trays->newEntity();
         }
-        if ($this->request->is('post') || $this->request->is('put')) {
-        //when updating a tray:
-        if (!isset($tray)) {
-        //load the tray object
-         $existingTray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
-         //get the number of books already in the tray
-         $existingProgress = $this->Trays->books->find('all')->where(['tray_id' => $existingTray->tray_id])->count();
-         //Ex: user enters 10, but the tray already contains 10 books
-         if ($existingProgress==$this->request->getData()['num_books']){
-         $this->Flash->error(__(' You entered '.$existingProgress.' but the tray already has '.$this->request->getData()['num_books']. ' items'));
-         //There's nothing to do in this case. Redirect to close out the tray.
-            return $this->redirect(['controller' => 'trays',
-                                                'action' => 'scanEnd',
-                                                $existingTray->tray_id,
-                                                'count' => $existingProgress]);
-         }
-         else if ($existingProgress > $this->request->getData()['num_books']){
-             $this->Flash->error(__(' You entered '.$this->request->getData()['num_books'].' but the tray already has '.$existingProgress. ' items'));             
-         }
-        }
-         //otherwise we'll make sure of the tray existence and status
-        else{
-            echo "progess: ".$progress."   num: ". $this->request->getData('num_books');
-            $tray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
-            
-            if (!isset($tray)) {
-                $this->Flash->error(__('The tray is not in the database.'));
-            } else if ($tray->status_id != Configure::read('Incompleted')) {
-                $this->Flash->error(__('The tray is already in process. Please, try a different tray.'));
-            } else {
-                $tray->modified_user = $this->Auth->user('username');
-                if($this->request->getData('is_restart')){
-                    $this->Trays->Books->deleteAll(['tray_id' => $tray->tray_id]);
-                }
-                if ($this->Trays->save($tray)) {
-                    $this->Flash->success(__('The tray has been saved.'));
-                    if ($progress == $this->request->getData('num_books') && !$this->request->getData('is_restart')) {
-                        // Wrap up the process
-                        return $this->redirect(['controller' => 'trays',
-                                                'action' => 'scanEnd',
-                                                $tray_id,
-                                                'count' => $progress]);
+        $progress = $this->Trays->books->find('all')->where(['tray_id' => $tray_id])->count();
+        //when the user submits the template form
+        if ($this->request->is('post') || $this->request->is('put')) {                 
+            //adding items to an existing tray
+            if ($this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first() && !$this->request->getData('is_restart')){
+                 //load the tray object
+                 $existingTray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
+                 //get the number of books already in the tray
+                 $existingProgress = $this->Trays->books->find('all')->where(['tray_id' => $existingTray->tray_id])->count();
+                 //Ex: user enters 10, but the tray already contains 10 books
+                 if ($existingProgress==$this->request->getData()['num_books']){
+                 $this->Flash->error(__(' You entered '.$this->request->getData()['num_books'].' but the tray already has '.$existingProgress. ' items'));
+                 //There's nothing to do in this case. Redirect to close out the tray.
+                    return $this->redirect(['controller' => 'trays',
+                                                        'action' => 'scanEnd',
+                                                        $existingTray->tray_id,
+                                                        'count' => $existingProgress]);
+                 }
+                 else if ($existingProgress > $this->request->getData()['num_books']){
+                     $this->Flash->error(__(' You entered '.$this->request->getData()['num_books'].' but the tray already has '.$existingProgress. ' items'));  
+                     $this->set(compact('tray', 'progress'));
+                 }
+                 else{
+                    $tray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
+
+                    if (!isset($tray)) {
+                        $this->Flash->error(__('The tray is not in the database.'));
+                    } else if ($tray->status_id != Configure::read('Incompleted')) {
+                        $this->Flash->error(__('The tray is already in process. Please, try a different tray.'));
                     } else {
-                        return $this->redirect(['controller' => 'books',
-                                            'action' => 'scan',
-                                            'count' => $this->request->getData()['num_books'],
-                                            $tray->tray_id]);
+                        $tray->modified_user = $this->Auth->user('username');
+                        if($this->request->getData('is_restart')){
+                            $this->Trays->Books->deleteAll(['tray_id' => $tray->tray_id]);
+                            $this->Flash->success(__('Restarting this tray'));
+                        }
+                        if ($this->Trays->save($tray)) {
+                            $this->Flash->success(__('The tray has been saved.'));
+
+                            //request indicates restart
+                            return $this->redirect(['controller' => 'books',
+                                'action' => 'scan',
+                                'count' => $this->request->getData()['num_books'],
+                                $tray->tray_id]);      
+                        }
+                        else{
+                            $this->Flash->error(__('The tray could not be saved. Please, try again.'));
+                        }   
                     }
-                }
-                $this->Flash->error(__('The tray could not be saved. Please, try again.'));
+                 }
             }
-        }}
+            else{  //must be a restart
+                $tray = $this->Trays->find('all')->where(['tray_barcode' => $this->request->getData('tray_barcode')])->first();
+
+                if (!isset($tray)) {
+                    $this->Flash->error(__('The tray is not in the database.'));
+                } else if ($tray->status_id != Configure::read('Incompleted')) {
+                    $this->Flash->error(__('The tray is already in process. Please, try a different tray.'));
+                } else {
+                    $tray->modified_user = $this->Auth->user('username');
+                    if($this->request->getData('is_restart')){
+                        $this->Trays->Books->deleteAll(['tray_id' => $tray->tray_id]);
+                        $this->Flash->success(__('Restarting this tray'));
+                    }
+                    if ($this->Trays->save($tray)) {
+                        $this->Flash->success(__('The tray has been saved.'));
+
+                        //request indicates restart
+                        return $this->redirect(['controller' => 'books',
+                            'action' => 'scan',
+                            'count' => $this->request->getData()['num_books'],
+                            $tray->tray_id]);      
+                    }
+                    else{
+                        $this->Flash->error(__('The tray could not be saved. Please, try again.'));
+                    }   
+                }
+
+            }
+
+
+            }
          $this->set(compact('tray', 'progress'));
      }
      
