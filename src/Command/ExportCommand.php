@@ -35,7 +35,11 @@ class ExportCommand extends Command
     */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out($this->export($args->getArgument('test')));
+        $data = $this->export($args->getArgument('test'));
+        // Avoid ConsoleId->out() output of trailing "\n" if no data
+        if ($data) {
+            $io->out($data);
+        }
     }
 
     /**
@@ -53,7 +57,9 @@ class ExportCommand extends Command
                 }
                 if (!$test) {
                     $tray->status_id = Configure::read('Exported');
-                    $this->Trays->save($tray);
+                    if (!$this->Trays->save($tray)) {
+			$this->addErrorLog('Save of '.$tray->tray_barcode.' failed');
+                    }
                 }
             }
         }
@@ -70,23 +76,18 @@ class ExportCommand extends Command
         if (!$this->error_log) {
             $this->error_log = fopen($this->error_log_filename, 'w');
         }
-        fwrite($msg);
+        fwrite($this->error_log, $msg);
+	error_log($msg);
     }
 
     /**
-     * Build Option Parser method
-     *
-     * @param $parser ConsoleOptionParser
-     *
+     * Override the Option Parser
      * @return $parser ConsoleOptionParser
      */
-    protected function buildOptionParser(ConsoleOptionParser $parser)
+    public function getOptionParser()
     {
-        $parser
-        ->addArgument('test', [
-            'help' => 'Is this a test run?'
-        ]);
-
+	$parser = parent::getOptionParser();
+        $parser->addOption('test', ['short' => 't', 'help' => 'Is this a test run?', 'boolean' => true]);
         return $parser;
     }
 }

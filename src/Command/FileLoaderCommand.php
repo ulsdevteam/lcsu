@@ -212,7 +212,7 @@ class FileLoaderCommand extends Command
         if (!$this->error_log) {
             $this->error_log = fopen($this->error_log_filename, 'w');
         }
-        fwrite($msg);
+        fwrite($this->error_log, $msg);
     }
 
     /**
