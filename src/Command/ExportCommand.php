@@ -35,7 +35,7 @@ class ExportCommand extends Command
     */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $data = $this->export($args->getArgument('test'));
+        $data = $this->export($args->getOption('test'));
         // Avoid ConsoleId->out() output of trailing "\n" if no data
         if ($data) {
             $io->out($data);
