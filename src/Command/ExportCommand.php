@@ -53,7 +53,7 @@ class ExportCommand extends Command
             $content = '';
             foreach ($trays as $tray) {
                 foreach ($tray->books as $book) {
-                    $content .= $tray->tray_barcode.' '.date('m/d/Y', strtotime($tray->created))."\t".$book->book_barcode."\t".date('Y/m/d H:i:s', strtotime($tray->created))."\t".'pittlcsu'."\r\n";
+                    $content .= $tray->tray_barcode.' '.date('m/d/Y', strtotime($tray->created))."\t".$book->book_barcode."\t".date('Y/m/d H:i:s', strtotime($tray->created))."\t".'pittlcsu'."\n";
                 }
                 if (!$test) {
                     $tray->status_id = Configure::read('Exported');
