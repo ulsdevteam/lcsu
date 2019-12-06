@@ -36,8 +36,10 @@ class ExportCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $data = $this->export($args->getOption('test'));
-        // Avoid ConsoleId->out() output of trailing "\n" if no data
+        // Avoid ConsoleIo->out() output of trailing "\n" if no data
         if ($data) {
+            // If data exists, remove the trailing newline because ConsoleIo->out() will make one for us.
+            $data = rtrim($data, "\n");
             $io->out($data);
         }
     }
@@ -53,7 +55,7 @@ class ExportCommand extends Command
             $content = '';
             foreach ($trays as $tray) {
                 foreach ($tray->books as $book) {
-                    $content .= $tray->tray_barcode.' '.date('m/d/Y', strtotime($tray->created))."\t".$book->book_barcode."\t".date('Y/m/d H:i:s', strtotime($tray->created))."\t".'pittlcsu'."\n";
+                    $content .= $tray->tray_barcode.' '.date('m/d/y', strtotime($tray->created))."\t".$book->book_barcode."\t".date('Y/m/d h:i:s', strtotime($tray->created))."\t".'pittlcsu'."\n";
                 }
                 if (!$test) {
                     $tray->status_id = Configure::read('Exported');
