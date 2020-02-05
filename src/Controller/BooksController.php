@@ -89,7 +89,7 @@ class BooksController extends AppController
                             $this->Flash->error(__('The book could not be saved. Please, try again.'));
                         }
                     } else {
-                        $this->Flash->error(__('This item is already in Voyager!'));
+                        $this->Flash->error(__('This barcode was not found in Voyager!'));
                         $block_item = $bookIngest->book_barcode;
                     }
                 }
