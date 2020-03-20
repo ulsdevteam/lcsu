@@ -44,6 +44,27 @@ class BooksController extends AppController
     }
 
     /**
+     * Delete method
+     *
+     * @param string|null $id Book id.
+     * @return \Cake\Http\Response|null Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $book = $this->Books->get($id);
+        $tray_id = $book->tray_id;
+        if ($this->Books->delete($book)) {
+            $this->Flash->success(__('The book has been removed from the tray.'));
+        } else {
+            $this->Flash->error(__('The book could not be deleted. Please, try again.'));
+        }
+
+        return $this->redirect(['controller' => 'trays', 'action' => 'view', $tray_id]);
+    }
+ 
+    /**
      * Scan method
      *
      * @var $tray

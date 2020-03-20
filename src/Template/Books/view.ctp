@@ -8,7 +8,7 @@
     <!-- <h3 class="page-title"><?= h($book->book_id) ?></h3> -->
     <!-- <?= $this->Html->link(__('Edit'), ['action' => 'edit', $book->book_id], ['class' => 'func-btn']) ?> -->
     <!-- <p class="func-btn">|</p> -->
-    <!-- <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $book->book_id], ['confirm' => __('Are you sure you want to delete # {0}?', $book->book_id), 'class' => 'func-btn']) ?> -->
+    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $book->book_id], ['confirm' => __('Are you sure you want to remove this book # {0}?', $book->book_barcode), 'class' => 'func-btn']) ?>
     <table class="vertical-table">
         <!-- <tr>
             <th scope="row"><?= __('Book Id') ?></th>
