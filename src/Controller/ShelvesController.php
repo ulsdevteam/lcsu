@@ -220,23 +220,29 @@ class ShelvesController extends AppController
     {
         $shelf = $this->Shelves->get($id);
         $check_amount = $this->Shelves->Trays->find('all')->where(['shelf_id' => $id])->count();
+        
+        
+        $traysize = $this->Shelves->Traysizes->find('all')->where(['traysize_id' => $this->request->getQuery('traysize_id')])->first();
+        $trayCapacity = intVal($traysize->num_trays);
         // Update traysize, create equal amount of trays, and redirect to view page
-        if ($this->request->getQuery('traysize_id') && $check_amount == 0) {
-             $traysize = $this->Shelves->Traysizes->find('all')->where(['traysize_id' => $this->request->getQuery('traysize_id')])->first();
+	// Allow allocate if shelf is not allocated to max amount
+        if ($this->request->getQuery('traysize_id') && $check_amount < $trayCapacity) {
             // Update traysize
             $shelf->traysize_id = $traysize->traysize_id;
             $shelf->tray_category = $traysize->tray_category;
             $this->Shelves->save($shelf);
+            $savedTrays=0;
             // Generate new trays
-            for ( $i = 1 ; $i <= intVal($traysize->num_trays) ; $i++) {
+            for ( $i = 1 ; $i <= $trayCapacity ; $i++) {
                 $tray = $this->Shelves->Trays->newEntity(['tray_barcode' => $shelf->shelf_barcode."-T".sprintf("%02d", $i), 'modified_user' => $this->Auth->user('username'), 'shelf_id' => $shelf->shelf_id]);
                 $tray->created = date("Y-m-d H:i:s");
                 $tray->tray_title = 'T'.sprintf("%02d", $i);
-                $this->Shelves->Trays->save($tray);
+                if ($this->Shelves->Trays->save($tray)) 
+                    {$savedTrays++;}
             }
-            $this->Flash->success(__('Created {0} trays successfully.', $traysize->num_trays));
+            $this->Flash->success(__('Created {0} tray(s) successfully.', $savedTrays));
         } else {
-            $this->Flash->error(__('Fail to allocate new trays.'));
+            $this->Flash->error(__('Failed to allocate new trays.'));
         }
 
         return $this->redirect(['action' => 'view', $id]);

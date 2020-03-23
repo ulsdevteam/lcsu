@@ -35,7 +35,9 @@ use Cake\Core\Configure;
     <?php
         if (count($trays)) {
             echo $this->Html->link(__('Print All Tray Labels'), ['action' => 'printLabels', $shelf->shelf_id], ['class'=>'func-btn tooltips', 'title' => 'Print all tray labels in this shelf']);
-        } elseif (isset($shelf->traysize)) {
+            echo "<span class='func-btn'>|</span>";
+            echo $this->Html->link(__('Allocate missing trays'), ['action' => 'allocate', $shelf->shelf_id, 'traysize_id' => $shelf->traysize->traysize_id], ['class'=>'func-btn tooltips', 'title' => 'Allocate any missing trays to this shelf']);
+	 } elseif (isset($shelf->traysize)) {
             echo $this->Html->link(__('Allocate trays'), ['action' => 'allocate', $shelf->shelf_id, 'traysize_id' => $shelf->traysize->traysize_id], ['class'=>'func-btn tooltips', 'title' => 'Allocate trays to this shelf']);
         }
     ?>
